@@ -1,0 +1,24 @@
+# env
+.env
+.env.local
+*.env
+!.env.example
+
+# web (Next.js / pnpm)
+web/node_modules/
+web/.next/
+web/out/
+web/.turbo/
+web/next-env.d.ts
+
+# api (Python / uv)
+api/.venv/
+api/__pycache__/
+api/**/__pycache__/
+api/.mypy_cache/
+api/.pytest_cache/
+api/.ruff_cache/
+api/*.egg-info/
+
+# OS
+.DS_Store
