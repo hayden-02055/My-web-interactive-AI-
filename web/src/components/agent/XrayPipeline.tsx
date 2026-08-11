@@ -47,7 +47,7 @@ export function XrayPipeline({ message, isFirstAssistantMessage }: XrayPipelineP
         type="button"
         onClick={() => setUserExpanded(!expanded)}
         aria-expanded={expanded}
-        className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-text-muted"
+        className="flex w-full items-center justify-between gap-2 px-2.5 py-1.5 text-text-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
       >
         <span>{expanded ? "Process" : `${filledSlots} steps · ${totalDurationMs}ms`}</span>
         <span aria-hidden>{expanded ? "▲" : "▼"}</span>
@@ -91,7 +91,7 @@ function XrayStepRow({ step, label }: { step: TraceStep; label: string }) {
         type="button"
         onClick={() => canExpand && setDetailOpen((v) => !v)}
         disabled={!canExpand}
-        className={`flex w-full items-center justify-between gap-2 rounded-md px-1 py-0.5 text-left ${
+        className={`flex w-full items-center justify-between gap-2 rounded-md px-1 py-0.5 text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           canExpand ? "hover:bg-surface-muted" : "cursor-default"
         } ${step.status === "skipped" ? "text-text-muted/60" : "text-text"}`}
       >

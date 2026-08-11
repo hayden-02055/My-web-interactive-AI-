@@ -22,7 +22,7 @@ export function AgentFab() {
       aria-label={isStreaming ? "Open AI Agent — response in progress" : "Open AI Agent"}
       aria-hidden={overlayOpen}
       tabIndex={overlayOpen ? -1 : 0}
-      className={`fixed right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg lg:hidden ${
+      className={`fixed right-4 z-40 flex h-14 w-14 items-center justify-center rounded-full bg-accent text-accent-foreground shadow-lg transition-opacity focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background lg:hidden ${
         overlayOpen ? "pointer-events-none opacity-0" : ""
       }`}
       style={{ bottom: "calc(env(safe-area-inset-bottom, 0px) + 1rem)" }}

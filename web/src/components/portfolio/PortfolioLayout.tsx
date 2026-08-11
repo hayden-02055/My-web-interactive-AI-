@@ -6,12 +6,13 @@ export type PortfolioLayoutProps = {
   agentSlot: ReactNode;
 };
 
-// 2-column desktop grid (SDD-01 §6.1). Mobile collapses to a single column
-// and drops the agent column entirely (§6.2) — the real bottom-sheet/overlay
-// treatment is SDD-09's job, not this SDD's.
+// 2-column desktop grid (SDD-01 §6.1). Below `lg` (1200px, see globals.css
+// --breakpoint-lg) it collapses to a single column and drops the agent
+// column entirely — replaced by the FAB + full-screen overlay treatment in
+// `components/agent/mobile/` (SDD-08).
 export function PortfolioLayout({ nav, content, agentSlot }: PortfolioLayoutProps) {
   return (
-    <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-8 px-6 py-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-10">
+    <div className="mx-auto grid w-full max-w-[1320px] flex-1 grid-cols-1 gap-[var(--space-6)] px-5 py-6 md:px-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:gap-[var(--space-7)] lg:px-10">
       <div className="flex min-w-0 flex-col">
         {nav}
         <main id="main-content" className="flex flex-col">

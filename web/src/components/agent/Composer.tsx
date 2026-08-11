@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent, type KeyboardEvent } from "react";
+import { Button } from "@/components/ui/Button";
 import { useAgent } from "./AgentProvider";
 
 // DD-24 — no automatic retry; a `RATE_LIMITED` error disables sending for
@@ -56,21 +57,13 @@ export function Composer() {
           className="max-h-32 min-h-10 flex-1 resize-none rounded-xl border border-border bg-surface px-3 py-2 text-sm text-text placeholder:text-text-muted focus:ring-1 focus:ring-accent focus:outline-none disabled:opacity-60"
         />
         {isStreaming ? (
-          <button
-            type="button"
-            onClick={stop}
-            className="shrink-0 rounded-full border border-border px-3 py-2 text-xs font-medium text-text transition-colors hover:bg-surface-muted"
-          >
+          <Button type="button" variant="secondary" size="sm" onClick={stop}>
             Stop
-          </button>
+          </Button>
         ) : (
-          <button
-            type="submit"
-            disabled={value.trim() === "" || isDegraded || rateLimited}
-            className="shrink-0 rounded-full bg-accent px-4 py-2 text-xs font-medium text-accent-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
-          >
+          <Button type="submit" variant="primary" size="sm" disabled={value.trim() === "" || isDegraded || rateLimited}>
             Send
-          </button>
+          </Button>
         )}
       </form>
     </div>
