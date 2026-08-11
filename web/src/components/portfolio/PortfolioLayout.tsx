@@ -14,7 +14,9 @@ export function PortfolioLayout({ nav, content, agentSlot }: PortfolioLayoutProp
     <div className="mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-8 px-6 py-6 lg:grid-cols-[minmax(0,1fr)_320px] lg:gap-12 lg:px-10">
       <div className="flex min-w-0 flex-col">
         {nav}
-        <main className="flex flex-col">{content}</main>
+        <main id="main-content" className="flex flex-col">
+          {content}
+        </main>
       </div>
       <aside className="hidden lg:sticky lg:top-6 lg:block lg:h-fit">{agentSlot}</aside>
     </div>

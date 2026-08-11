@@ -69,7 +69,16 @@ export function startPageContextObserver(
       return;
     }
     const bestSection = pickBest(sectionEls, SECTION_ATTR, ratios, order);
-    onChange({ section: bestSection?.id ?? null, caseStudy: null });
+    if (bestSection !== null) {
+      onChange({ section: bestSection.id, caseStudy: null });
+      return;
+    }
+    // SDD-08 DD-37 — nothing intersects (scrolled to a gap, or the
+    // portfolio is hidden behind the mobile overlay via `display: none`,
+    // which makes every observed element stop intersecting at once).
+    // Report nothing rather than resetting to null: a visitor reading a
+    // Case Study who opens the overlay must still get that Case Study's
+    // context, not a wiped one (PRD §9.1's core scenario).
   }
 
   const observer = new IntersectionObserver(

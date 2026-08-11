@@ -13,5 +13,5 @@ keywords: [contact, email, linkedin, github]
 **Discuss Your Idea** — 아이디어 단계여도 괜찮습니다. 함께 범위를 정리해 보겠습니다.
 
 - Email: [haewon02p@gmail.com](mailto:haewon02p@gmail.com)
-- LinkedIn: TODO — 실제 프로필 링크 필요
-- GitHub: TODO — 실제 프로필 링크 필요
+- LinkedIn: [linkedin.com/in/haewon-park-626bb93aa](https://www.linkedin.com/in/haewon-park-626bb93aa/)
+- GitHub: [github.com/hayden-02055](https://github.com/hayden-02055)

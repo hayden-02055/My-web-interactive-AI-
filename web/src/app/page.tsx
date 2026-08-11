@@ -1,5 +1,7 @@
 import { AgentPanel } from "@/components/agent/AgentPanel";
 import { AgentProvider } from "@/components/agent/AgentProvider";
+import { AgentFab } from "@/components/agent/mobile/AgentFab";
+import { AgentOverlay } from "@/components/agent/mobile/AgentOverlay";
 import { CaseStudyList } from "@/components/portfolio/CaseStudyList";
 import { HeroSection } from "@/components/portfolio/HeroSection";
 import { PortfolioLayout } from "@/components/portfolio/PortfolioLayout";
@@ -40,6 +42,11 @@ export default function Home() {
         }
         agentSlot={<AgentPanel />}
       />
+      {/* SDD-08 §3 — CSS (`lg:hidden`), not conditional rendering, decides
+          desktop vs. mobile, so AgentProvider's state never remounts across
+          a breakpoint change (M-08). */}
+      <AgentFab />
+      <AgentOverlay />
     </AgentProvider>
   );
 }

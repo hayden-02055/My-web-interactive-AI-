@@ -416,3 +416,23 @@ def test_trace_step_durations_never_exceed_total_latency() -> None:
     ]
     assert durations
     assert all(d <= total_latency_ms for d in durations)
+
+
+def test_expired_client_session_id_gets_a_genuinely_new_one() -> None:
+    # SDD-08 C-07 — if the client's remembered session_id isn't in Redis
+    # (TTL expired, server restarted), the server must not silently reuse
+    # that same id with a fresh empty record: the client can only detect a
+    # reset (DD-23 `contextReset`) by seeing the session_id actually change.
+    set_llm_client(FakeLLMClient([[_content_chunk("hi"), _usage_chunk(1)]]))
+    stale_session_id = "018f2c1a-6e2b-7c3a-9b1e-2f6a7d8c9e10"
+
+    with TestClient(app) as client:
+        set_knowledge_index(_small_index())
+        response = client.post(
+            "/api/v1/chat", json={"message": "hi", "session_id": stale_session_id}
+        )
+
+    events = _parse_sse(response.text)
+    session_event = next(data for name, data in events if name == "session")
+    assert session_event["resumed"] is False
+    assert session_event["session_id"] != stale_session_id

@@ -73,7 +73,28 @@
   - 2턴 연속 전송으로 X-ray 펼침 정책 확인: 첫 메시지는 완료 후에도 "Process"(펼침) 유지, 두 번째 메시지는 완료 후 "N steps · Nms"(한 줄 요약)로 자동 접힘 — DD-31 그대로 재현
   - 실 백엔드(fakeredis+실 OpenAI 키)로도 스모크: 시작 프롬프트 클릭(전송 안 됨) → 직접 전송 → 정상 응답. 다만 실 모델이 "Fingoo 관련 링크 알려줘" 류 질문에서 `suggest_section` tool 대신 답변 텍스트에 마크다운 링크(`[text](url)`)를 그대로 적어 넣는 경우를 발견 — 렌더러는 이를 plain text로만 표시(의도된 안전한 동작, `dangerouslySetInnerHTML` 미사용)하지만 모델이 tool 대신 텍스트 링크를 선호하는 경향은 SDD-03 시스템 프롬프트 튜닝 여지로 남음(아래 "다음 단계"에 기록)
   - 콘솔 에러 0건(모든 시나리오 공통), 모바일 뷰포트 회귀 없음(Agent 슬롯 여전히 미표시)
-  - 확인 못한 것: X-ray `failed` 상태의 실제 렌더(아이콘 로직은 코드리뷰로 검증했으나 `failed` status를 가진 트레이스 스텝을 실제로 주입해보지 않음), X-ray Technical Detail 내부 검색 결과 앵커 클릭(같은 `navigateToAnchor` 공용 함수를 쓰므로 SuggestionCard 클릭 검증으로 갈음 판단)
+  - 확인 못한 것: X-ray `failed` 상태의 실제 렌더(아이콘 로직은 코드리뷰로 검증했으나 `failed` status를 가진 트레이스 스텝을 실제로 주입해보지 않음), X-ray Technical Detail 내부 검색 결과 앵커 클릭(같은 `navigateToAnchor` 공용 함수를 쓰므로 SuggestionCard 클릭 검증으로 갈음 판단) — **SDD-08에서 둘 다 해소됨, 아래 참고**
+
+- SDD-08 (MVP Closure — Mobile Shell · Isolation · Accessibility) 구현
+  - `web/src/components/agent/mobile/{AgentFab,AgentOverlay}.tsx` (D-53) — FAB→전체화면 오버레이(DD-35), `AgentProvider`를 언마운트하지 않고 표시만 전환(DD-36)
+  - `web/src/lib/page-context/observer.ts` 수정(DD-37) — 아무것도 교차하지 않을 때 `null`을 발행하지 않고 마지막 유효값 유지(관측 대상이 안 보인다고 컨텍스트를 지우면 안 됨)
+  - 접근성: `web/src/app/layout.tsx`에 skip link(A-06), `PortfolioLayout`의 `<main>`에 `id="main-content"`, 오버레이 포커스 트랩·ESC·포커스 복귀(A-02, D-56)
+  - `web/playwright.config.ts` + `web/e2e/inv01-portfolio-without-agent.spec.ts` — Playwright E2E 신규 도입(DD-39), `NEXT_PUBLIC_API_BASE_URL`을 RFC 2606 `.invalid` 도메인으로 빌드해 진짜 도달 불가 상태로 INV-01 검증. CI에 `e2e` job 추가
+  - `web/scripts/check-bundle-secrets.ts` (D-59, INV-06) — `.next/static`만 스캔(서버 전용 코드 제외), API 키 패턴 + 서버 전용 env var 이름 검색. CI `ci` job에 편입
+  - `api/app/agent/prompts.py` 개정(C-05) — `suggest_section` tool을 직접 호출하고 답변 본문에 내부 링크를 쓰지 말라는 지시 추가
+  - `api/app/api/v1/chat.py` 수정(C-07) — 클라이언트가 보낸 `session_id`가 Redis에 없으면(TTL 만료 등) 같은 id를 재사용하지 않고 새 id 발급, 회귀 테스트 추가
+  - `web/src/components/agent/AgentProvider.tsx` 수정(C-08) — 세션 복원 완료 플래그를 ref에서 state로 교체(레이스 컨디션 수정, 아래 버그 항목 참고)
+  - `README.md` 갱신 — SDD-01~08·트레이스 계약 링크, 테스트 명령 섹션 추가
+- 검증: `pnpm validate:content/lint/build/typecheck/test`(28 tests) + `pnpm test:e2e`(2 tests) + `pnpm check:bundle-secrets`, `uv run ruff/mypy/pytest`(63 tests) 전부 통과. Lighthouse 프로덕션 빌드 실측(로컬): Performance 100(데스크톱)/98(모바일), Accessibility 100(공통), FCP 0.9s/LCP 2.5s(모바일), TBT 0ms, CLS 0.
+  - **DD-39 요구대로 INV-01 E2E 테스트를 의도적으로 깨뜨려 실패하는 것 확인 후 원복** — `SectionContainer`의 `id`를 임시로 훼손해 테스트 2개가 정확히 실패하는 것 재현.
+  - **INV-06 스캐너를 의도적으로 검증** — 합성 시크릿 문자열을 빌드 산출물에 주입해 탐지되는 것 확인 후 제거, 정상 빌드는 clean.
+  - Playwright로 모바일 뷰포트(390×844) 라이브 검증: FAB 탭→오버레이 열림→포커스가 닫기 버튼으로 이동(A-02), Case Study로 스크롤 후 오버레이를 열고 질문 전송 시 **오버레이가 열려 있어도 스크롤 전 page_context(`{section:"experience", case_study:"fingoo"}`)가 그대로 전송됨**(DD-37 핵심 시나리오), 배경 스크롤 잠금/해제, ESC로 닫힘 + 포커스가 FAB로 정확히 복귀, Tab 트랩이 마지막 요소에서 첫 요소로(및 역방향) 순환, 스트리밍 중 닫아도 백그라운드에서 계속 진행되고 재열기 시 이어짐(M-07), 데스크톱 뷰포트에서 FAB 완전 미노출.
+  - 접근성 라이브 검증: 첫 15개 tab stop 전수 확인 결과 전부 포커스 표시(outline) 보임, skip link가 실제 첫 tab stop, 콘텐츠에 이미지가 없어 alt 텍스트 이슈 자체가 없음, 헤딩 레벨(H1→H2→H3→H4) 스킵 없음.
+  - C-06~C-11 카테고리 전항 라이브 확인 완료 (429 카운트다운, Stop 버튼(실제 열린 스트림으로 재현), 스크롤 리렌더(41스텝 중 nav DOM 변경 5회로 유계), X-ray `failed` 상태 렌더).
+  - **라이브 검증 중 실제 버그 2건 발견·수정**:
+    1. **백엔드**: 클라이언트가 만료된 `session_id`를 보내면 서버가 같은 id로 빈 세션을 재발급해, 클라이언트가 "컨텍스트 리셋"을 영원히 감지할 수 없었다(id가 안 바뀌므로). `session_id`를 신규 발급하도록 수정.
+    2. **프론트엔드**: `AgentProvider`의 세션 복원 완료 플래그가 `useRef`였는데, ref는 동기로 즉시 바뀌지만 짝을 이루는 `setState`는 다음 렌더까지 반영되지 않아 — 마운트 시 "복원 완료 플래그는 true, 그런데 state는 아직 복원 전 빈 배열"인 순간에 저장 이펙트가 끼어들어 **방금 sessionStorage에서 읽어온 대화를 빈 배열로 덮어써버렸다.** 60개 메시지를 시딩한 뒤 새로고침하는 테스트로 재현(저장 결과가 0개로 나와 발견), 플래그를 `useState`로 바꿔 두 값이 항상 같은 렌더에서 갱신되도록 수정 후 정확히 50개(`MAX_MESSAGES`)로 절삭되는 것 확인.
+  - 확인 못한 것 / 배포 인프라 필요: 실기기 가상 키보드 겹침(M-06, 스펙 자체가 에뮬레이터로 재현 불가 명시), Railway/Vercel 환경변수 설정과 프로덕션 URL SSE 동작(L-03/L-05/L-06, 배포 권한 없음), 실기기 iOS/Android 확인(L-08).
 
 ## 진행 중인 것
 
@@ -81,19 +102,11 @@
 
 ## 다음 단계
 
-- **[SDD-03 프롬프트 튜닝 여지, 이번 세션에 새로 발견]** 실 모델이 링크를 제안할 때 `suggest_section` tool 대신 답변 텍스트에 마크다운 링크를 직접 적어 넣는 경우가 관찰됐다(위 라이브 검증 참고). 프론트는 안전하게 plain text로 처리하므로 사용자에게 깨진 화면을 보여주지는 않지만, 제안 카드·X-ray가 그 상호작용을 놓치게 된다. SDD-03 시스템 프롬프트에 "링크 제안은 반드시 suggest_section tool을 쓰고 본문에 URL을 직접 쓰지 말 것" 같은 명시적 지시를 추가하면 개선될 가능성이 있음 — 이번 세션 범위(SDD-05/06/07)가 아니라 SDD-03 후속 조정 사항으로 남김.
-- **[SDD-05/06/07 — 일부 DoD 미검증]** X-ray `failed` 상태 트레이스 스텝의 실제 렌더(로직은 있으나 라이브로 주입해보지 않음), Technical Detail 내부 검색 결과 앵커의 개별 클릭(공용 `navigateToAnchor`라 SuggestionCard 검증으로 갈음).
-- **[SDD-04 — 일부 DoD 미검증]** 라이브로 확인한 것 외에 아직 남은 항목:
-  - Stop 버튼으로 스트림 중단 시 부분 텍스트 유지(DoD 9.1) — reducer 단위 테스트로는 확인했으나 실제 브라우저에서 Stop 클릭까지는 안 해봄
-  - `RATE_LIMITED` 429 JSON 응답의 재시도 카운트다운 UI(DoD 9.4) — 코드는 있으나 실제로 rate limit을 유발해 눈으로 확인하지 않음
-  - 스크롤 중 과도한 리렌더 없음(DoD 9.2, 프로파일러 확인) — React DevTools Profiler로 실측하지 않음
-  - `sessionStorage` 저장 상한 초과 시 절삭(DoD 9.3) — 절삭 로직은 구현했으나 실제로 상한을 넘겨서 확인하지 않음
-  - 서버가 새 `session_id` 발급 시 `contextReset` 안내(DoD 9.3) — Redis TTL(60분) 만료를 실제로 기다려 재현하지 않음
-- **[SDD-02 §10.1 미충족, 이월]** Sentinel Club·Perix Sentinel·SCPC Agent 본문이 아직 "사실 검증 완료" 상태가 아닌 채로 실제 인덱싱(`knowledge.json`)까지 진행했다 — SDD-02가 스스로 "초안 상태 인덱싱 금지"라고 명시한 것과 배치된다. 사용자가 파이프라인 구축을 우선하기로 명시적으로 선택했기 때문이지만, **실제 서비스에 얹기 전에는 콘텐츠 사실 검증 후 `build:knowledge-source` + `build_knowledge.py` 재실행이 필요.**
-- **`contact.md`의 LinkedIn·GitHub 링크가 여전히 `TODO` placeholder.** 이것도 인덱싱되어 있으므로(§10.1 두 번째 항목), 실제 링크로 교체 후 재인덱싱 필요.
-- 검색 품질: 명확한 질의 8개 중 top-1 정확도 4/8 (top-4 포함 6/8) — 원인은 Case Study `Overview` 절이 다른 절 내용을 요약 언급해 구체 질의에서도 상위 랭크되는 콘텐츠 밀도 문제 (SDD-02 §6.4에 상세 기록). 콘텐츠 사실 검증 시 `Overview`를 더 개괄적으로 다듬으면 개선 여지 있음 — 이후 `calibrate_retrieval.py` 재실행 권장.
+- **[출시 전 배포 작업 필요, 에이전트가 수행 불가]** Railway·Vercel 환경변수 설정(`.env.example` 대조), 프로덕션 도메인을 `ALLOWED_ORIGINS`에 추가, 프로덕션 URL에서 SSE 실동작 확인, 실기기(iOS·Android) 모바일 확인 — SDD-08 §6 L-03/L-05/L-06/L-08.
+- **[SDD-03 프롬프트 튜닝, 부분 해결]** 시스템 프롬프트를 고쳐 마크다운 링크·tool 이름 노출은 사라졌지만, 모델이 여전히 `suggest_section`을 호출하지 않고 말로만 안내하는 경우가 남아있다(gpt-4o-mini의 한계로 추정). 더 강한 모델 또는 few-shot 예시 추가가 다음 시도 후보 — Post-MVP.
+- 검색 품질: 명확한 질의 8개 중 top-1 정확도 4/8 (top-4 포함 6/8) — 콘텐츠 본문이 이번에도 바뀌지 않아 SDD-02 §6.4 수치가 그대로 유효하다(SDD-08 §7에 재확인 기록). 원인은 Case Study `Overview` 절의 콘텐츠 밀도 문제, 실제로 본문을 고쳐 개선하려면 `calibrate_retrieval.py` 재실행 필요.
 - SDD-02 O-12(검색 품질 회귀 테스트 CI 편입)는 아직 미착수 — 평가 셋이 임베딩 API 호출을 필요로 해 결정론적 CI에 부적합하다는 이유로 SDD 자체가 뒤로 미룸.
-- SDD-01 DoD 중 사람이 직접 확인해야 하는 항목(브라우저 접근성 등)은 미검증 상태로 남아있음.
+- Post-MVP 후보(SDD-08 §11에 기록): Analytics, Technical X-ray Detail 사용 관찰 후 개선, 대화→Contact 요약, Case Study 필터링, Contact 폼 백엔드, 쿼리 임베딩/응답 캐시, 스크린리더 전면 최적화, 다국어.
 
 ## 미결 결정사항
 
@@ -117,3 +130,8 @@
 - X-ray "첫 메시지" 판정(DD-31 "첫 방문 시 한 번은 자동으로 펼쳐진 채로 둔다")은 **현재 세션의 대화 배열에서 가장 오래된 assistant 메시지인지**로 판정한다 — 별도 저장소 없이 계산 가능하고, `sessionStorage` 복원(DD-23)과도 자연히 일치한다(복원된 대화의 첫 메시지도 동일하게 "첫 메시지"로 취급됨).
 - `MvpOutlineBlock`이 `relevant_case_studies`의 id만 갖고 있어 실제 Case Study 제목을 모르는 문제는, 없는 데이터를 지어내는 대신 id를 `humanizeId()`로 포맷팅(`"perix-sentinel"` → `"Perix Sentinel"`)해서 표시하는 것으로 해결했다 — 서버 콘텐츠 메타데이터를 클라이언트로 새로 흘려보내는 배선을 추가하지 않기 위한 선택.
 - `Composer`의 입력값(`composerValue`)을 로컬 state에서 `AgentProvider` context로 끌어올렸다 — `StarterPrompts`가 형제 컴포넌트인 `Composer`의 입력창을 채워야 하는데(§1.5), React에서 형제 간 상태 공유는 공통 부모로 끌어올리는 것이 정공법이라고 판단했다.
+- `AgentFab`은 오버레이가 열려도 **언마운트하지 않는다**(`aria-hidden`+`tabIndex=-1`+`opacity-0`로 비활성화만). 처음엔 `overlayOpen`일 때 `return null`로 구현했으나, 그러면 닫을 때 포커스를 되돌려줄 안정적인 DOM 노드가 없어져 A-02(포커스 복귀)가 실제로 깨지는 것을 라이브 테스트로 발견해 이 방식으로 바꿨다.
+- `AgentOverlay`는 배경 포트폴리오를 `display:none`으로 숨기지 않는다 — `fixed` 오버레이로 시각적으로만 덮고 `body` 스크롤만 잠근다. DD-37이 경고하는 "숨기면 IntersectionObserver가 교차 없음을 보고" 문제 자체가 이 구현에서는 애초에 발생하지 않지만, observer 쪽 수정(마지막 값 유지)은 스펙이 명시적으로 요구하는 정책이라 그대로 구현해 이중으로 방어했다.
+- `check-bundle-secrets.ts`는 `.next/server`가 아니라 `.next/static`만 스캔한다 — 서버 전용 코드는 브라우저로 전송되지 않으므로 시크릿이 있어도 정상이고, 거기까지 스캔하면 오탐만 늘어난다.
+- Playwright E2E(`playwright.config.ts`)는 자체 `webServer.command`로 `next build && next start`를 실행해 **매번 새로 빌드**한다 — `NEXT_PUBLIC_API_BASE_URL`이 빌드 타임에 번들에 박히는 값이라, 이미 떠 있는 개발 서버를 재사용하면 원하는 "도달 불가 주소"가 실제로 반영됐는지 보장할 수 없기 때문. CI 시간이 늘어나는 대가를 감수했다.
+- CI에서 E2E를 기존 `ci` job에 합치지 않고 별도 `e2e` job으로 분리했다 — Playwright 브라우저 설치(`--with-deps`)가 무겁고, 실패 시 원인(단위 테스트 vs E2E)을 빠르게 구분하기 위함.

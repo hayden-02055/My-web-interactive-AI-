@@ -34,6 +34,14 @@ async def post_chat(chat_request: ChatRequest, request: Request) -> StreamingRes
     await check_and_increment(redis_client, ip=client_ip, session_id=session_id)
 
     session, resumed = await load_session(redis_client, session_id)
+    if chat_request.session_id is not None and not resumed:
+        # The client remembered a session_id, but Redis has no record for
+        # it (TTL expired, or the server restarted) — issue a genuinely new
+        # id rather than quietly reusing theirs. If we kept the old id, the
+        # client's "did the id change?" check (SDD-04 DD-23 `contextReset`)
+        # could never fire, since resuming and silently-reset-under-the-
+        # same-id would be indistinguishable to it.
+        session_id = new_session_id()
     session.session_id = session_id
 
     async def event_stream() -> AsyncIterator[str]:

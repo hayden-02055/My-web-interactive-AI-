@@ -37,5 +37,28 @@ jobs:
       - run: git diff --exit-code ../api/data/knowledge.source.json
       - run: pnpm lint
       - run: pnpm build
+      - run: pnpm check:bundle-secrets
       - run: pnpm typecheck
       - run: pnpm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 11
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      # SDD-08 DD-39 — INV-01 pinned as CI-enforced, not manual. This job's
+      # own build (inside playwright.config.ts's webServer) points
+      # NEXT_PUBLIC_API_BASE_URL at an address that can never resolve.
+      - run: pnpm test:e2e

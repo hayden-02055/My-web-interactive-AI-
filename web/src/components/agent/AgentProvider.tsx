@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useEffect, useRef, useState, type ReactNode, type RefObject } from "react";
 import type { ChatPageContext, ChatRequestBody } from "@/types/api";
 import { loadPersistedAgentState, savePersistedAgentState } from "@/lib/agent/persistence";
 import { agentReducer } from "@/lib/agent/reducer";
@@ -45,6 +45,14 @@ type AgentContextValue = {
   // composer without sending — "fills the input, never auto-sends" (INV-04).
   composerValue: string;
   setComposerValue: (value: string) => void;
+  // SDD-08 DD-36 — the mobile overlay only toggles visibility; it never
+  // unmounts this provider, so streaming/state survive open<->close.
+  overlayOpen: boolean;
+  openOverlay: () => void;
+  closeOverlay: () => void;
+  // Stable across the FAB's whole lifetime (it never unmounts — see
+  // AgentFab) so the overlay can reliably return focus to it on close (A-02).
+  fabRef: RefObject<HTMLButtonElement | null>;
 };
 
 const AgentContext = createContext<AgentContextValue | null>(null);
@@ -63,11 +71,20 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   const [state, setState] = useState<AgentState>(initialAgentState);
   const [retryAvailableAt, setRetryAvailableAt] = useState<number | null>(null);
   const [composerValue, setComposerValue] = useState("");
+  const [overlayOpen, setOverlayOpen] = useState(false);
   const abortRef = useRef<AbortController | null>(null);
   const lastUserTextRef = useRef<string | null>(null);
+  const fabRef = useRef<HTMLButtonElement | null>(null);
   // Guards the save effect below from firing (with the still-empty initial
   // state) before the restore effect below has had its turn on mount.
-  const restoredRef = useRef(false);
+  // Real state, not a ref: a ref flips synchronously while the matching
+  // `setState` below only takes effect on the *next* render, so the save
+  // effect could (and, before this fix, actually did) observe
+  // "restored = true" together with the still-empty pre-restore `state` in
+  // the same effect pass — clobbering the just-loaded sessionStorage data
+  // with an empty write before the real restore ever committed. Deriving
+  // both from `useState` keeps them landing in the same render together.
+  const [hasRestored, setHasRestored] = useState(false);
 
   // D-37 — restore the transcript once, after mount (see note above). This
   // is the standard React-documented exception to `set-state-in-effect`:
@@ -80,7 +97,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setState((s) => normalizeRestoredState({ ...s, sessionId: persisted.sessionId, messages: persisted.messages }));
     }
-    restoredRef.current = true;
+    setHasRestored(true);
   }, []);
 
   // D-39 — the one detector both the panel and nav highlighting read from.
@@ -88,9 +105,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
 
   // D-37 — cheap; only real growth is new turns, not every render.
   useEffect(() => {
-    if (!restoredRef.current) return;
+    if (!hasRestored) return;
     savePersistedAgentState({ sessionId: state.sessionId, messages: state.messages });
-  }, [state.sessionId, state.messages]);
+  }, [hasRestored, state.sessionId, state.messages]);
 
   // C-06 — abort any in-flight stream on unmount.
   useEffect(() => () => abortRef.current?.abort(), []);
@@ -172,9 +189,24 @@ export function AgentProvider({ children }: { children: ReactNode }) {
     if (lastUserTextRef.current !== null) sendMessage(lastUserTextRef.current);
   }, [sendMessage]);
 
+  const openOverlay = useCallback(() => setOverlayOpen(true), []);
+  const closeOverlay = useCallback(() => setOverlayOpen(false), []);
+
   return (
     <AgentContext.Provider
-      value={{ state, retryAvailableAt, sendMessage, stop, retryLast, composerValue, setComposerValue }}
+      value={{
+        state,
+        retryAvailableAt,
+        sendMessage,
+        stop,
+        retryLast,
+        composerValue,
+        setComposerValue,
+        overlayOpen,
+        openOverlay,
+        closeOverlay,
+        fabRef,
+      }}
     >
       {children}
     </AgentContext.Provider>
