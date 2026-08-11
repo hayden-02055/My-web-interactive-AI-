@@ -131,7 +131,7 @@ data:  { ... }
 | `suggestion` | Navigation / CTA 제안 |
 | `error` | 실행 오류 |
 
-> 각 이벤트의 필드 스키마는 SDD-03에서 확정한다. 본 문서는 **이름 공간과 봉투 형태만** 고정한다.
+> 각 이벤트의 필드 스키마는 [`docs/contracts/trace-events.md`](contracts/trace-events.md)(SDD-03 D-28)가 정본이다. 본 문서는 **이름 공간과 봉투 형태만** 고정한다.
 
 ## 6.6 Error Response
 
@@ -184,9 +184,24 @@ REDIS_URL=redis://localhost:6379
 
 RATE_LIMIT_PER_MINUTE=10
 RATE_LIMIT_PER_DAY=200
+GLOBAL_DAILY_LIMIT=300
+
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4o-mini
+LLM_MAX_OUTPUT_TOKENS=1024
+LLM_TIMEOUT_SECONDS=25
+
+MAX_MESSAGE_CHARS=1000
+MAX_TOOL_ROUNDS=2
+REQUEST_BUDGET_SECONDS=30
+
+SESSION_TTL_SECONDS=3600
+SESSION_MAX_TURNS=10
 ```
 
 > `EMBEDDING_*` · `KNOWLEDGE_INDEX_PATH` · `RETRIEVAL_*`는 SDD-02 §8에서 추가됐다.
+> `GLOBAL_DAILY_LIMIT` · `LLM_*` · `MAX_MESSAGE_CHARS` · `MAX_TOOL_ROUNDS` ·
+> `REQUEST_BUDGET_SECONDS` · `SESSION_*`는 SDD-03 §10에서 추가됐다.
 
 `web/.env.example`
 

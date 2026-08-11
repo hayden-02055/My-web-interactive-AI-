@@ -516,9 +516,24 @@ REDIS_URL=redis://localhost:6379
 
 RATE_LIMIT_PER_MINUTE=10
 RATE_LIMIT_PER_DAY=200
+GLOBAL_DAILY_LIMIT=300
+
+LLM_PROVIDER=openai
+LLM_MODEL=gpt-4o-mini
+LLM_MAX_OUTPUT_TOKENS=1024
+LLM_TIMEOUT_SECONDS=25
+
+MAX_MESSAGE_CHARS=1000
+MAX_TOOL_ROUNDS=2
+REQUEST_BUDGET_SECONDS=30
+
+SESSION_TTL_SECONDS=3600
+SESSION_MAX_TURNS=10
 ```
 
 > `EMBEDDING_*` · `KNOWLEDGE_INDEX_PATH` · `RETRIEVAL_*`는 SDD-02 §8에서 추가됐다.
+> `GLOBAL_DAILY_LIMIT` · `LLM_*` · `MAX_MESSAGE_CHARS` · `MAX_TOOL_ROUNDS` ·
+> `REQUEST_BUDGET_SECONDS` · `SESSION_*`는 SDD-03 §10에서 추가됐다.
 
 `web/.env.example`
 
@@ -673,3 +688,4 @@ SDD-00은 FR을 직접 구현하지 않으며, FR-01 ~ FR-12는 SDD-01 이후에
 | v0.2 | 2026-08-11 | SDD-01 D-10 — §8.1에 `pnpm validate:content` 게이트 추가 |
 | v0.3 | 2026-08-11 | SDD-02 D-19 — §8.3 drift gate 구현을 §8.1(Stage A)·§8.2(Stage B)에 반영 |
 | v0.4 | 2026-08-11 | fix — §8.1 `typecheck`를 `build` 이후로 재배치 (fresh checkout에서 `.next/types/` 부재로 CI 실패하던 버그 수정) |
+| v0.5 | 2026-08-11 | SDD-03 D-30 — §6.7에 Agent 백엔드 환경 변수(`LLM_*` · `SESSION_*` · `GLOBAL_DAILY_LIMIT` 등) 추가 |

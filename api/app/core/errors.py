@@ -1,6 +1,7 @@
 from typing import Literal
 
 from fastapi import Request
+from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 
 ErrorCode = Literal[
@@ -48,3 +49,14 @@ async def domain_error_handler(request: Request, exc: Exception) -> JSONResponse
     if exc.retry_after is not None:
         body["retry_after"] = exc.retry_after
     return JSONResponse(status_code=exc.status_code, content={"error": body})
+
+
+async def validation_error_handler(request: Request, exc: Exception) -> JSONResponse:
+    # Keeps FastAPI's built-in body-parsing failures (missing/malformed
+    # fields) on the same §6.6 envelope as our own DomainError responses,
+    # instead of leaking FastAPI's default 422 shape.
+    assert isinstance(exc, RequestValidationError)
+    return JSONResponse(
+        status_code=400,
+        content={"error": {"code": "INVALID_REQUEST", "message": "Invalid request body."}},
+    )

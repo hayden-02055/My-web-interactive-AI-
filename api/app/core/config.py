@@ -24,6 +24,19 @@ class Settings(BaseSettings):
 
     rate_limit_per_minute: int = 10
     rate_limit_per_day: int = 200
+    global_daily_limit: int = 300
+
+    llm_provider: str = "openai"
+    llm_model: str = "gpt-4o-mini"
+    llm_max_output_tokens: int = 1024
+    llm_timeout_seconds: int = 25
+
+    max_message_chars: int = 1000
+    max_tool_rounds: int = 2
+    request_budget_seconds: int = 30
+
+    session_ttl_seconds: int = 3600
+    session_max_turns: int = 10
 
     @field_validator("allowed_origins", mode="before")
     @classmethod

@@ -3,11 +3,12 @@ from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.api.v1.router import router as v1_router
 from app.core.config import settings
-from app.core.errors import DomainError, domain_error_handler
+from app.core.errors import DomainError, domain_error_handler, validation_error_handler
 from app.knowledge.loader import load_knowledge_index, set_knowledge_index
 
 logger = logging.getLogger(__name__)
@@ -33,4 +34,5 @@ app.add_middleware(
 )
 
 app.add_exception_handler(DomainError, domain_error_handler)
+app.add_exception_handler(RequestValidationError, validation_error_handler)
 app.include_router(v1_router)
