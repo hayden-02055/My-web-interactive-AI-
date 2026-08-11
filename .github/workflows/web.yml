@@ -36,5 +36,5 @@ jobs:
       - run: pnpm build:knowledge-source
       - run: git diff --exit-code ../api/data/knowledge.source.json
       - run: pnpm lint
-      - run: pnpm typecheck
       - run: pnpm build
+      - run: pnpm typecheck

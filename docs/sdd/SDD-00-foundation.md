@@ -5,7 +5,7 @@
 | **Document** | SDD-00 |
 | **Title** | Foundation & Architecture |
 | **Status** | Draft |
-| **Version** | v0.3 |
+| **Version** | v0.4 |
 | **Upstream** | Interactive AI Portfolio — PRD v0.1 |
 | **Author** | 박해원 |
 | **Phase** | 1단계 · 기반 |
@@ -581,9 +581,11 @@ pnpm validate:content
 pnpm build:knowledge-source
 git diff --exit-code ../api/data/knowledge.source.json
 pnpm lint
-pnpm typecheck
 pnpm build
+pnpm typecheck
 ```
+
+> `typecheck`는 `build` **이후**에 실행한다. Next.js는 `LayoutProps<"/">` 등 라우트 타입을 `.next/types/`에 생성하는데, 이 디렉토리는 `next build`(또는 `next dev`)를 한 번도 실행하지 않은 fresh checkout에는 존재하지 않는다 — 순서를 반대로 두면 CI에서 `tsc`가 항상 실패한다.
 
 > `validate:content`는 SDD-01 §4에서 정의하는 콘텐츠 스키마 검증 게이트다.
 > `build:knowledge-source` + `git diff`는 §8.3 drift gate의 Stage A(SDD-02 §7.1)다.
@@ -670,3 +672,4 @@ SDD-00은 FR을 직접 구현하지 않으며, FR-01 ~ FR-12는 SDD-01 이후에
 | v0.1 | 2026-08-07 | 최초 작성 |
 | v0.2 | 2026-08-11 | SDD-01 D-10 — §8.1에 `pnpm validate:content` 게이트 추가 |
 | v0.3 | 2026-08-11 | SDD-02 D-19 — §8.3 drift gate 구현을 §8.1(Stage A)·§8.2(Stage B)에 반영 |
+| v0.4 | 2026-08-11 | fix — §8.1 `typecheck`를 `build` 이후로 재배치 (fresh checkout에서 `.next/types/` 부재로 CI 실패하던 버그 수정) |
