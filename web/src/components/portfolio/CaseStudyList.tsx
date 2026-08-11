@@ -1,0 +1,21 @@
+import type { CaseStudy } from "@/types/content";
+import { CaseStudyCard } from "./CaseStudyCard";
+
+export type CaseStudyListProps = {
+  caseStudies: CaseStudy[];
+};
+
+// The `experience` section is a container, not a content file (§3.1) — Case
+// Studies are inlined here rather than routed (DD-01).
+export function CaseStudyList({ caseStudies }: CaseStudyListProps) {
+  return (
+    <section id="experience" className="scroll-mt-24 border-b border-border py-16">
+      <h2 className="text-2xl font-semibold tracking-tight text-text">Experience</h2>
+      <div className="mt-8 flex flex-col gap-12">
+        {caseStudies.map((caseStudy) => (
+          <CaseStudyCard key={caseStudy.id} caseStudy={caseStudy} />
+        ))}
+      </div>
+    </section>
+  );
+}

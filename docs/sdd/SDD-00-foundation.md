@@ -5,7 +5,7 @@
 | **Document** | SDD-00 |
 | **Title** | Foundation & Architecture |
 | **Status** | Draft |
-| **Version** | v0.1 |
+| **Version** | v0.2 |
 | **Upstream** | Interactive AI Portfolio — PRD v0.1 |
 | **Author** | 박해원 |
 | **Phase** | 1단계 · 기반 |
@@ -568,10 +568,13 @@ LLM 판단이 아니라 **결정론적 게이트가 머지 조건**이다.
 
 ```text
 pnpm install --frozen-lockfile
+pnpm validate:content
 pnpm lint
 pnpm typecheck
 pnpm build
 ```
+
+> `validate:content`는 SDD-01 §4에서 정의하는 콘텐츠 스키마 검증 게이트다.
 
 ### 8.2 API (`.github/workflows/api.yml`)
 
@@ -650,3 +653,4 @@ SDD-00은 FR을 직접 구현하지 않으며, FR-01 ~ FR-12는 SDD-01 이후에
 | 버전 | 일자 | 변경 |
 |---|---|---|
 | v0.1 | 2026-08-07 | 최초 작성 |
+| v0.2 | 2026-08-11 | SDD-01 D-10 — §8.1에 `pnpm validate:content` 게이트 추가 |
