@@ -10,7 +10,11 @@ export type CaseStudyCardProps = {
 // linking (`#experience-<id>-<key>`), even though nothing routes there yet.
 export function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
   return (
-    <article id={caseStudy.anchor} className="scroll-mt-24 rounded-2xl border border-border bg-surface p-6 sm:p-8">
+    <article
+      id={caseStudy.anchor}
+      data-agent-case-study={caseStudy.id}
+      className="scroll-mt-24 rounded-2xl border border-border bg-surface p-6 sm:p-8"
+    >
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-3">
           <h3 className="text-xl font-semibold text-text">{caseStudy.title}</h3>

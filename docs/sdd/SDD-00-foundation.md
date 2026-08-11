@@ -218,6 +218,7 @@ LLM 또는 임베딩 API를 호출하는 모든 엔드포인트는 예외 없이
 | UI | React |
 | Styling | Tailwind CSS |
 | Package manager | pnpm |
+| Unit tests | Vitest (SDD-04 D-40 — framework-free `lib/` modules only) |
 | Deploy | Vercel |
 
 ### 4.2 Backend
@@ -260,7 +261,8 @@ LLM 또는 임베딩 API를 호출하는 모든 엔드포인트는 예외 없이
 | python | 3.12.13 |
 | fastapi | 0.141.1 |
 | pydantic | 2.13.4 |
-| redis | _TBD_ — SDD-03에서 `redis` 의존성 추가 시점에 기입 (AD-06) |
+| redis | 8.1.0 (Python `redis` 패키지, SDD-03 AD-06) |
+| vitest | 4.1.10 (frontend 단위 테스트, SDD-04 D-40) |
 
 ---
 
@@ -598,12 +600,14 @@ git diff --exit-code ../api/data/knowledge.source.json
 pnpm lint
 pnpm build
 pnpm typecheck
+pnpm test
 ```
 
 > `typecheck`는 `build` **이후**에 실행한다. Next.js는 `LayoutProps<"/">` 등 라우트 타입을 `.next/types/`에 생성하는데, 이 디렉토리는 `next build`(또는 `next dev`)를 한 번도 실행하지 않은 fresh checkout에는 존재하지 않는다 — 순서를 반대로 두면 CI에서 `tsc`가 항상 실패한다.
 
 > `validate:content`는 SDD-01 §4에서 정의하는 콘텐츠 스키마 검증 게이트다.
 > `build:knowledge-source` + `git diff`는 §8.3 drift gate의 Stage A(SDD-02 §7.1)다.
+> `test`(Vitest, SDD-04 D-40)는 `lib/agent`·`lib/page-context`의 프레임워크 독립 모듈만 검증한다 — 백엔드 API 호출이나 브라우저 없이 결정론적으로 통과해야 한다.
 
 ### 8.2 API (`.github/workflows/api.yml`)
 
@@ -689,3 +693,4 @@ SDD-00은 FR을 직접 구현하지 않으며, FR-01 ~ FR-12는 SDD-01 이후에
 | v0.3 | 2026-08-11 | SDD-02 D-19 — §8.3 drift gate 구현을 §8.1(Stage A)·§8.2(Stage B)에 반영 |
 | v0.4 | 2026-08-11 | fix — §8.1 `typecheck`를 `build` 이후로 재배치 (fresh checkout에서 `.next/types/` 부재로 CI 실패하던 버그 수정) |
 | v0.5 | 2026-08-11 | SDD-03 D-30 — §6.7에 Agent 백엔드 환경 변수(`LLM_*` · `SESSION_*` · `GLOBAL_DAILY_LIMIT` 등) 추가 |
+| v0.6 | 2026-08-11 | SDD-04 — §4.1/§4.5에 Vitest 추가, §8.1에 `pnpm test` 게이트 추가 |

@@ -1,4 +1,5 @@
-import { AgentSlotPlaceholder } from "@/components/agent/AgentSlotPlaceholder";
+import { AgentPanel } from "@/components/agent/AgentPanel";
+import { AgentProvider } from "@/components/agent/AgentProvider";
 import { CaseStudyList } from "@/components/portfolio/CaseStudyList";
 import { HeroSection } from "@/components/portfolio/HeroSection";
 import { PortfolioLayout } from "@/components/portfolio/PortfolioLayout";
@@ -24,19 +25,21 @@ export default function Home() {
   ];
 
   return (
-    <PortfolioLayout
-      nav={<SectionNav items={navItems} />}
-      content={
-        <>
-          <HeroSection section={hero} />
-          {middleSections.map((section) => (
-            <SectionContainer key={section.id} section={section} />
-          ))}
-          <CaseStudyList caseStudies={caseStudies} />
-          <SectionContainer section={contact} />
-        </>
-      }
-      agentSlot={<AgentSlotPlaceholder />}
-    />
+    <AgentProvider>
+      <PortfolioLayout
+        nav={<SectionNav items={navItems} />}
+        content={
+          <>
+            <HeroSection section={hero} />
+            {middleSections.map((section) => (
+              <SectionContainer key={section.id} section={section} />
+            ))}
+            <CaseStudyList caseStudies={caseStudies} />
+            <SectionContainer section={contact} />
+          </>
+        }
+        agentSlot={<AgentPanel />}
+      />
+    </AgentProvider>
   );
 }

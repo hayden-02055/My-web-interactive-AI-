@@ -42,12 +42,29 @@
     - 실소켓(uvicorn + `httpx.stream`, TestClient 아님)으로 `answer.delta`가 실제로 시간차를 두고 도착 — 진짜 토큰 스트리밍 확인(첫 토큰 ~1.9s, SDD-03 §10에 기입)
   - 확인 못한 것: 표본 1건 측정이라 first-token 지연 대표값은 아님, 여러 세션 동시 요청 시 지연 분포는 미측정.
 
+- SDD-04 (Persistent Agent Panel & Page Context) 구현
+  - `web/src/types/api.ts` 확장 — SDD-03 §5 이벤트 wire 타입 전체(snake_case, 백엔드 그대로 미러링)
+  - `web/src/lib/agent/{types,sseClient,reducer,persistence}.ts` — 상태 모델(D-31, camelCase는 최상위 필드만·trace/suggestion/block/error는 페이로드 그대로), `fetch`+`ReadableStream` SSE 파서(D-32, C-01~C-08), 이벤트→상태 리듀서(D-33), `sessionStorage` 지속(D-37/DD-23)
+  - `web/src/lib/page-context/{store,observer}.ts` — 단일 `IntersectionObserver`(D-34/DD-21), `useSyncExternalStore` 호환 스토어
+  - `web/src/components/agent/{AgentProvider,AgentPanel,MessageList,MessageItem,Composer,ChatWarning,DegradedNotice,DebugTraceView}.tsx` (D-35/D-36) — `AgentSlotPlaceholder` 대체, U-01~U-07 반영
+  - `SectionNav`를 client component로 전환해 `lib/page-context/store`를 직접 구독(D-39) — `components/agent`를 import하지 않음(SDD-00 §6.3)
+  - `SectionContainer`/`CaseStudyList`/`CaseStudyCard`에 `data-agent-section`/`data-agent-case-study` 속성 추가 — observer가 SDD-01 콘텐츠 id를 하드코딩하지 않고 DOM에서 직접 읽도록
+  - Vitest 도입(신규, 기존 프레임워크 없었음) — `web/src/lib/agent/{sseClient,reducer}.test.ts` 22개(D-40), `.github/workflows/web.yml`에 `pnpm test` 게이트 추가, SDD-00 §4.1/§4.5/§8.1 갱신(v0.6)
+- 검증: `pnpm validate:content/lint/build/typecheck/test`(22 tests) 전부 통과, `/`는 여전히 `○ (Static)`. **실제 SDD-03 백엔드(fakeredis+실 OpenAI 키) + Playwright(Chromium)로 라이브 브라우저 검증**: 메시지 전송 → 실시간 스트리밍 답변 확인, Experience로 스크롤 시 nav `aria-current` 및 page context가 동시에 반응(D-39), Case Study 카드로 스크롤 시 `{section:"experience", case_study:"fingoo"}` 정확히 산출, 새로고침 후 대화 복원(DoD 9.3), 모바일 뷰포트(390×844)에서 Agent 슬롯 미표시(SDD-01과 동일), 콘솔 에러 0건.
+  - **라이브 검증 중 실제 버그 1건 발견·수정**: `AgentProvider`가 `useState` 초기화 함수에서 `sessionStorage`를 동기로 읽어, 서버 렌더(빈 상태)와 클라이언트 최초 렌더(복원된 상태)가 달라 React hydration 에러가 발생했다. `useEffect`에서 마운트 후 1회 복원하도록 수정 — Next.js 공식 문서가 권장하는 표준 패턴. (`react-hooks/set-state-in-effect` 린트 규칙은 이 케이스에 대해 범위를 좁힌 `eslint-disable-next-line`으로 처리, 사유를 코드에 주석으로 남김.)
+
 ## 진행 중인 것
 
 - 없음 (이번 세션 작업 자체는 완료. 단, 아래 "다음 단계"의 항목들은 미해결 상태로 남아있음)
 
 ## 다음 단계
 
+- **[SDD-04 — 일부 DoD 미검증]** 라이브로 확인한 것 외에 아직 남은 항목:
+  - Stop 버튼으로 스트림 중단 시 부분 텍스트 유지(DoD 9.1) — reducer 단위 테스트로는 확인했으나 실제 브라우저에서 Stop 클릭까지는 안 해봄
+  - `RATE_LIMITED` 429 JSON 응답의 재시도 카운트다운 UI(DoD 9.4) — 코드는 있으나 실제로 rate limit을 유발해 눈으로 확인하지 않음
+  - 스크롤 중 과도한 리렌더 없음(DoD 9.2, 프로파일러 확인) — React DevTools Profiler로 실측하지 않음
+  - `sessionStorage` 저장 상한 초과 시 절삭(DoD 9.3) — 절삭 로직은 구현했으나 실제로 상한을 넘겨서 확인하지 않음
+  - 서버가 새 `session_id` 발급 시 `contextReset` 안내(DoD 9.3) — Redis TTL(60분) 만료를 실제로 기다려 재현하지 않음
 - **[SDD-02 §10.1 미충족, 이월]** Sentinel Club·Perix Sentinel·SCPC Agent 본문이 아직 "사실 검증 완료" 상태가 아닌 채로 실제 인덱싱(`knowledge.json`)까지 진행했다 — SDD-02가 스스로 "초안 상태 인덱싱 금지"라고 명시한 것과 배치된다. 사용자가 파이프라인 구축을 우선하기로 명시적으로 선택했기 때문이지만, **실제 서비스에 얹기 전에는 콘텐츠 사실 검증 후 `build:knowledge-source` + `build_knowledge.py` 재실행이 필요.**
 - **`contact.md`의 LinkedIn·GitHub 링크가 여전히 `TODO` placeholder.** 이것도 인덱싱되어 있으므로(§10.1 두 번째 항목), 실제 링크로 교체 후 재인덱싱 필요.
 - 검색 품질: 명확한 질의 8개 중 top-1 정확도 4/8 (top-4 포함 6/8) — 원인은 Case Study `Overview` 절이 다른 절 내용을 요약 언급해 구체 질의에서도 상위 랭크되는 콘텐츠 밀도 문제 (SDD-02 §6.4에 상세 기록). 콘텐츠 사실 검증 시 `Overview`를 더 개괄적으로 다듬으면 개선 여지 있음 — 이후 `calibrate_retrieval.py` 재실행 권장.
@@ -64,3 +81,9 @@
 - SDD-03 §6 실행 흐름에서 rate limit(RATE_LIMITED)·요청 검증(INVALID_REQUEST) 실패는 **스트림이 열리기 전에 발생**하므로 일반 JSON 에러 응답(기존 `domain_error_handler`)으로 처리하고, `error` SSE 프레임은 스트림이 이미 열린 뒤의 실패(AGENT_FAILED 등)에만 사용하도록 구분했다 — SDD-03 §3.3이 두 경우를 명시적으로 구분하지 않아 내린 판단.
 - `runner.py`의 tool 라운드 루프는 `stream=True + tools=...`를 매 라운드 동일하게 호출하고, 첫 델타가 `content`인지 `tool_calls`인지로 분기한다 — tool 미사용 턴에서 "결정 호출 1회 + 답변 생성 호출 1회"로 모델을 두 번 부르는 낭비를 없앤다. 대신 `generating_answer` trace step은 실제로 텍스트가 스트리밍된 구간에만 발행한다(INV-05 "연출용 가짜 단계 금지"를 지키기 위해, 텍스트가 이미 나온 뒤에 별도 단계를 다시 붙이지 않음).
 - `get_case_study`/`page_context.case_study` 화이트리스트는 지식 인덱스 스키마에 필드를 추가하는 대신, 앵커 문자열(`experience-{id}` / `experience-{id}-{key}`)을 SDD-01 DD-03의 고정 heading-key 집합 기준으로 역파싱해서 도출한다 — SDD-02 커밋된 산출물 스키마를 건드리지 않기 위한 선택.
+- SDD-04 `AgentError.code`를 백엔드 `ErrorCode`보다 넓게(`| "STREAM_INTERRUPTED"`) 정의했다 — 유휴 타임아웃(C-07)·비정상 종료(C-08)는 백엔드가 아예 모르는 클라이언트 전용 상황이라 대응하는 wire 코드가 없기 때문. `AgentError`의 나머지 필드는 §3.1 "그대로 미러링" 원칙을 그대로 따른다.
+- `agentReducer`는 SDD-03 §3.2 표에 있는 SSE 이벤트 8종 + 클라이언트 전용 합성 이벤트 2종(`__network_error`: DD-22 degraded 진입, `__aborted`: C-06 Stop/언마운트)만 처리한다. "사용자 메시지 낙관적 추가"(전송 시 user+assistant 메시지를 배열에 미리 넣는 것)는 리듀서에 넣지 않고 `AgentProvider`가 직접 `setState`로 처리한다 — `agentReducer`를 §3.2 표와 정확히 1:1로 대응하는 순수 함수로 유지해 D-40 단위 테스트가 스펙 표를 그대로 검증할 수 있게 하기 위함.
+- `AgentProvider`의 세션 복원(`sessionStorage` → state)은 `useState` 초기화 함수가 아니라 마운트 후 `useEffect`에서 수행한다 — SSR과 클라이언트 최초 렌더가 다른 값을 가지면 hydration 에러가 나기 때문(실제로 라이브 테스트 중 재현·수정, 위 참고). 첫 페인트는 항상 빈 상태이고, 복원된 대화는 마운트 직후 한 번 더 렌더링되며 나타난다(짧은 깜빡임 있음, 허용 가능한 트레이드오프로 판단).
+- `data-agent-section`/`data-agent-case-study` 속성을 기존 `id`(앵커) 속성과 별도로 추가했다 — `id`는 스크롤 앵커/네비게이션 링크 타깃이라는 기존 역할을 그대로 유지하고, page-context 감지는 별도 속성으로 분리해 두 관심사가 서로의 값 형식(섹션은 id 그대로, Case Study는 앵커가 아니라 순수 id)에 얽매이지 않게 했다.
+- `IntersectionObserver`의 `rootMargin`(`-10% 0px -70% 0px`)·`threshold` 값은 스펙에 구체적 수치가 없어 흔한 scroll-spy 패턴값으로 직접 정했다 — 실제 사용감을 보고 조정 여지가 있는 값.
+- Case Study 중첩 판정(DD-21 "Case Study 활성 시 `{section: 'experience', case_study: id}`")은 "Case Study 요소가 하나라도 교차 중이면 무조건 우선, 없을 때만 섹션 레벨로 폴백"으로 구현했다 — Case Study `<article>`과 상위 `<section id="experience">`는 크기 차이가 커서 교차 비율을 직접 비교하는 게 무의미하다고 판단한 결과.
