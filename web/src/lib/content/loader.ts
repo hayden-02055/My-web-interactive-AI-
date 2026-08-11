@@ -46,7 +46,7 @@ function load(): LoadedContent {
   const sections: Section[] = sectionFiles
     .map((f) => {
       const fm = f.frontmatter as SectionFrontmatter;
-      return { ...fm, anchor: sectionAnchor(fm.id), html: renderMarkdown(f.body) };
+      return { ...fm, anchor: sectionAnchor(fm.id), html: renderMarkdown(f.body), text: f.body.trim() };
     })
     .sort((a, b) => a.order - b.order);
 
@@ -63,6 +63,7 @@ function load(): LoadedContent {
             heading: chunk.heading,
             anchor: caseStudyHeadingAnchor(fm.id, key),
             html: renderMarkdown(chunk.content),
+            text: chunk.content,
           };
         }),
       };

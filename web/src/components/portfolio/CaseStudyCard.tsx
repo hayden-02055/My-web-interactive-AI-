@@ -1,11 +1,5 @@
-import type { CaseStudy, CaseStudyStatus } from "@/types/content";
-
-const STATUS_LABEL: Record<CaseStudyStatus, string> = {
-  shipped: "Shipped",
-  "in-progress": "In Progress",
-  prototype: "Prototype",
-  archived: "Archived",
-};
+import { CASE_STUDY_STATUS_LABEL } from "@/lib/content/labels";
+import type { CaseStudy } from "@/types/content";
 
 export type CaseStudyCardProps = {
   caseStudy: CaseStudy;
@@ -21,7 +15,7 @@ export function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
         <div className="flex flex-wrap items-center gap-3">
           <h3 className="text-xl font-semibold text-text">{caseStudy.title}</h3>
           <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-xs font-medium text-text-muted">
-            {STATUS_LABEL[caseStudy.status]}
+            {CASE_STUDY_STATUS_LABEL[caseStudy.status]}
           </span>
         </div>
         <p className="text-sm text-text-muted">

@@ -13,6 +13,13 @@ class Settings(BaseSettings):
     llm_api_key: str = ""
     embedding_api_key: str = ""
 
+    embedding_provider: str = "openai"
+    embedding_model: str = "text-embedding-3-small"
+    embedding_dimensions: int = 1536
+    knowledge_index_path: str = "data/knowledge.json"
+    retrieval_top_k: int = 4
+    retrieval_min_score: float = 0.3
+
     redis_url: str = "redis://localhost:6379"
 
     rate_limit_per_minute: int = 10

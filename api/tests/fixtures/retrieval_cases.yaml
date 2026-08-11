@@ -1,0 +1,66 @@
+# SDD-02 §6.3 — retrieval evaluation set used to calibrate `k` / `min_score`
+# (via scripts/calibrate_retrieval.py) and to spot-check search quality.
+# Not wired into CI yet (O-12) — embedding calls make it non-deterministic
+# and dependent on a live API key, which §7's drift gate deliberately avoids.
+#
+# type: specific   -> expected_anchor should rank as the top-1 result
+# type: overview   -> expected_anchor (a Case Study card chunk) should rank top-1
+# type: irrelevant -> search() should return an empty list at the calibrated min_score
+
+cases:
+  - query: "Fingoo의 아키텍처는 어떻게 구성되어 있나요?"
+    type: specific
+    expected_anchor: experience-fingoo-architecture
+
+  - query: "Fingoo에서 어떤 기술적 의사결정을 내렸나요?"
+    type: specific
+    expected_anchor: experience-fingoo-decisions
+
+  - query: "Sentinel Club의 핵심 문제는 무엇인가요?"
+    type: specific
+    expected_anchor: experience-sentinel-club-problem
+
+  - query: "Perix Sentinel의 솔루션은 무엇인가요?"
+    type: specific
+    expected_anchor: experience-perix-sentinel-solution
+
+  - query: "SCPC Agent 프로젝트에서 어떤 제약 조건이 있었나요?"
+    type: specific
+    expected_anchor: experience-scpc-agent-constraints
+
+  - query: "이 사람 연락처가 어떻게 되나요? 이메일 알려주세요"
+    type: specific
+    expected_anchor: contact
+
+  - query: "어떤 기술 스택을 다루시나요?"
+    type: specific
+    expected_anchor: skills
+
+  - query: "어떻게 일하시나요? 개발 프로세스가 궁금해요"
+    type: specific
+    expected_anchor: how-i-work
+
+  - query: "Fingoo에서 뭐 했어요?"
+    type: overview
+    expected_anchor: experience-fingoo
+
+  - query: "Sentinel Club 프로젝트에 대해 설명해주세요"
+    type: overview
+    expected_anchor: experience-sentinel-club
+
+  - query: "Perix Sentinel이 뭔가요?"
+    type: overview
+    expected_anchor: experience-perix-sentinel
+
+  - query: "SCPC Agent Project 소개해주세요"
+    type: overview
+    expected_anchor: experience-scpc-agent
+
+  - query: "오늘 부산 날씨 어때요?"
+    type: irrelevant
+
+  - query: "파이썬 리스트 정렬하는 법 알려주세요"
+    type: irrelevant
+
+  - query: "좋아하는 영화가 뭐예요?"
+    type: irrelevant

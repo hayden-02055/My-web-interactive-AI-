@@ -1,0 +1,411 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-11T08:08:14.396Z",
+  "chunks": [
+    {
+      "id": "about",
+      "section": "about",
+      "anchor": "about",
+      "label": "About",
+      "content": "### I build with users in mind\n\n사용자와 제품의 실제 필요를 고려합니다.\n\n### I care about maintainability\n\n혼자만 이해할 수 있는 코드보다, 협업 가능한 구조를 선호합니다.\n\n### I think in trade-offs\n\n기술적으로 가능한 것과 실제로 필요한 것을 구분합니다.\n\n### I consider cost\n\n제품의 가치와 무관하게 기술 복잡도를 늘리지 않습니다.",
+      "embed_text": "[About]\nkeywords: philosophy, engineering identity\n\n### I build with users in mind\n\n사용자와 제품의 실제 필요를 고려합니다.\n\n### I care about maintainability\n\n혼자만 이해할 수 있는 코드보다, 협업 가능한 구조를 선호합니다.\n\n### I think in trade-offs\n\n기술적으로 가능한 것과 실제로 필요한 것을 구분합니다.\n\n### I consider cost\n\n제품의 가치와 무관하게 기술 복잡도를 늘리지 않습니다.",
+      "content_hash": "sha256:2b1c2e1efff248e7f42975aaabe0e780a59c8889e27ad3176cdf6ce52be75b13"
+    },
+    {
+      "id": "contact",
+      "section": "contact",
+      "anchor": "contact",
+      "label": "Contact",
+      "content": "**Discuss Your Idea** — 아이디어 단계여도 괜찮습니다. 함께 범위를 정리해 보겠습니다.\n\n- Email: [haewon02p@gmail.com](mailto:haewon02p@gmail.com)\n- LinkedIn: TODO — 실제 프로필 링크 필요\n- GitHub: TODO — 실제 프로필 링크 필요",
+      "embed_text": "[Contact]\nkeywords: contact, email, linkedin, github\n\n**Discuss Your Idea** — 아이디어 단계여도 괜찮습니다. 함께 범위를 정리해 보겠습니다.\n\n- Email: [haewon02p@gmail.com](mailto:haewon02p@gmail.com)\n- LinkedIn: TODO — 실제 프로필 링크 필요\n- GitHub: TODO — 실제 프로필 링크 필요",
+      "content_hash": "sha256:43f6e22a56ddc25c09e4ddf8387bc4788465b6830f7765a10f8f9da8c64ca203"
+    },
+    {
+      "id": "experience-fingoo",
+      "section": "experience",
+      "anchor": "experience-fingoo",
+      "label": "Fingoo",
+      "content": "Fingoo (Backend / Production Experience, Shipped, 2024 – 2026). 금융 교육 서비스의 백엔드 아키텍처 설계와 LangGraph 멀티에이전트 시스템 정리·인수인계. Tech: NestJS, TypeScript, PostgreSQL, Redis.",
+      "embed_text": "[Fingoo]\ncategory: Backend / Production Experience\nkeywords: NestJS, TypeScript, PostgreSQL, Redis\n\nFingoo (Backend / Production Experience, Shipped, 2024 – 2026). 금융 교육 서비스의 백엔드 아키텍처 설계와 LangGraph 멀티에이전트 시스템 정리·인수인계. Tech: NestJS, TypeScript, PostgreSQL, Redis.",
+      "content_hash": "sha256:65b58d43a3c9cf6a09253796ca4010ce2a5687f44aff9167e7331dd01889e7ae"
+    },
+    {
+      "id": "experience-fingoo-architecture",
+      "section": "experience",
+      "anchor": "experience-fingoo-architecture",
+      "label": "Fingoo — Architecture",
+      "content": "NestJS(TypeScript) 백엔드, PostgreSQL을 주 데이터 저장소로, Redis를 캐시·세션 계층으로 사용하는 구조입니다. API 설계 시 팀의 협업 흐름을 고려해 계층을 분리했습니다.",
+      "embed_text": "[Fingoo — Architecture]\ncategory: Backend / Production Experience\n\nNestJS(TypeScript) 백엔드, PostgreSQL을 주 데이터 저장소로, Redis를 캐시·세션 계층으로 사용하는 구조입니다. API 설계 시 팀의 협업 흐름을 고려해 계층을 분리했습니다.",
+      "content_hash": "sha256:d3c65a966b0472869aac6d68252fb11b17e0de1f58da2ec167700dea58fb6e3e"
+    },
+    {
+      "id": "experience-fingoo-constraints",
+      "section": "experience",
+      "anchor": "experience-fingoo-constraints",
+      "label": "Fingoo — Constraints",
+      "content": "- 제품 방향이 이미 한 차례 전환된 상태에서 합류해, 기존 코드베이스와 새로운 방향성 사이의 간극을 고려해야 했습니다.\n- 실제 운영 중인 서비스였기 때문에, 재작업은 팀 협업과 인수인계를 전제로 진행해야 했습니다.",
+      "embed_text": "[Fingoo — Constraints]\ncategory: Backend / Production Experience\n\n- 제품 방향이 이미 한 차례 전환된 상태에서 합류해, 기존 코드베이스와 새로운 방향성 사이의 간극을 고려해야 했습니다.\n- 실제 운영 중인 서비스였기 때문에, 재작업은 팀 협업과 인수인계를 전제로 진행해야 했습니다.",
+      "content_hash": "sha256:6b24bf7081f18b7ef983a8ba4add03f4b9e27e2cd86be38f2e7526de99320ee2"
+    },
+    {
+      "id": "experience-fingoo-decisions",
+      "section": "experience",
+      "anchor": "experience-fingoo-decisions",
+      "label": "Fingoo — Key Decisions",
+      "content": "- 새로운 기능 개발보다 기존 멀티에이전트 시스템의 구조 정리와 문서화를 우선순위로 두었습니다 — 팀이 이해하지 못하는 시스템은 유지보수할 수 없다고 판단했기 때문입니다.\n- 아키텍처 문서를 별도로 남겨, 인수인계 이후에도 팀이 참고할 수 있도록 했습니다.",
+      "embed_text": "[Fingoo — Key Decisions]\ncategory: Backend / Production Experience\n\n- 새로운 기능 개발보다 기존 멀티에이전트 시스템의 구조 정리와 문서화를 우선순위로 두었습니다 — 팀이 이해하지 못하는 시스템은 유지보수할 수 없다고 판단했기 때문입니다.\n- 아키텍처 문서를 별도로 남겨, 인수인계 이후에도 팀이 참고할 수 있도록 했습니다.",
+      "content_hash": "sha256:b1ad93e04cc4434f3360a127651c77e3081fa994f9bb151dfb364df8dfb9fda5"
+    },
+    {
+      "id": "experience-fingoo-learned",
+      "section": "experience",
+      "anchor": "experience-fingoo-learned",
+      "label": "Fingoo — What I Learned",
+      "content": "실제 팀 환경에서는 새 기능을 추가하는 것보다, 기존 시스템을 이해 가능한 상태로 만드는 것이 더 큰 가치를 만들 때가 있다는 것을 배웠습니다.",
+      "embed_text": "[Fingoo — What I Learned]\ncategory: Backend / Production Experience\n\n실제 팀 환경에서는 새 기능을 추가하는 것보다, 기존 시스템을 이해 가능한 상태로 만드는 것이 더 큰 가치를 만들 때가 있다는 것을 배웠습니다.",
+      "content_hash": "sha256:2467f011731fbb905e29144361421658993a073f60033d10d6b4d9438483a3fe"
+    },
+    {
+      "id": "experience-fingoo-overview",
+      "section": "experience",
+      "anchor": "experience-fingoo-overview",
+      "label": "Fingoo — Overview",
+      "content": "Fingoo는 투자 분석에서 금융 교육으로 피벗한 금융 서비스입니다. Backend / AI 개발자로 합류해 백엔드 아키텍처 설계와, 피벗 이전에 구축되어 있던 LangGraph 기반 멀티에이전트 시스템의 정리 및 인수인계를 담당했습니다.",
+      "embed_text": "[Fingoo — Overview]\ncategory: Backend / Production Experience\n\nFingoo는 투자 분석에서 금융 교육으로 피벗한 금융 서비스입니다. Backend / AI 개발자로 합류해 백엔드 아키텍처 설계와, 피벗 이전에 구축되어 있던 LangGraph 기반 멀티에이전트 시스템의 정리 및 인수인계를 담당했습니다.",
+      "content_hash": "sha256:45520d020f8630b74c6a676f7760598a194ca98da53585da36a60c7893ca4a36"
+    },
+    {
+      "id": "experience-fingoo-problem",
+      "section": "experience",
+      "anchor": "experience-fingoo-problem",
+      "label": "Fingoo — Problem",
+      "content": "LangGraph 기반 멀티에이전트 시스템이 제품 방향 전환(투자 분석 → 금융 교육) 이후 새로운 제품 방향과 맞지 않게 되었고, 문서화도 충분하지 않아 팀이 구조를 온전히 파악하기 어려운 상태였습니다.",
+      "embed_text": "[Fingoo — Problem]\ncategory: Backend / Production Experience\n\nLangGraph 기반 멀티에이전트 시스템이 제품 방향 전환(투자 분석 → 금융 교육) 이후 새로운 제품 방향과 맞지 않게 되었고, 문서화도 충분하지 않아 팀이 구조를 온전히 파악하기 어려운 상태였습니다.",
+      "content_hash": "sha256:ff007f618c626d34d0d4df67226b4d29c08cf92a09fb7fc35650f555358f1fa1"
+    },
+    {
+      "id": "experience-fingoo-result",
+      "section": "experience",
+      "anchor": "experience-fingoo-result",
+      "label": "Fingoo — Result",
+      "content": "백엔드 아키텍처와 API가 실제 팀 협업 환경에서 운영되었고, LangGraph 멀티에이전트 시스템은 정리된 문서와 함께 팀에 인수인계되었습니다.",
+      "embed_text": "[Fingoo — Result]\ncategory: Backend / Production Experience\n\n백엔드 아키텍처와 API가 실제 팀 협업 환경에서 운영되었고, LangGraph 멀티에이전트 시스템은 정리된 문서와 함께 팀에 인수인계되었습니다.",
+      "content_hash": "sha256:f0d6f1e5ff55cff1c2aef90483e6c3db7b26e36288dd894c2d4b5180450eb3b3"
+    },
+    {
+      "id": "experience-fingoo-role",
+      "section": "experience",
+      "anchor": "experience-fingoo-role",
+      "label": "Fingoo — My Role",
+      "content": "CTO 겸 AI/Backend 개발자로서 백엔드 아키텍처 설계, API 개발, 그리고 기존 멀티에이전트 시스템의 구조 정리와 인수인계 문서 작성을 주도했습니다.",
+      "embed_text": "[Fingoo — My Role]\ncategory: Backend / Production Experience\n\nCTO 겸 AI/Backend 개발자로서 백엔드 아키텍처 설계, API 개발, 그리고 기존 멀티에이전트 시스템의 구조 정리와 인수인계 문서 작성을 주도했습니다.",
+      "content_hash": "sha256:c45bed0b44d11b0cbed002c50e8ea067580c3ea5788649a965ced64f5543b752"
+    },
+    {
+      "id": "experience-fingoo-solution",
+      "section": "experience",
+      "anchor": "experience-fingoo-solution",
+      "label": "Fingoo — Solution",
+      "content": "NestJS 기반 백엔드 아키텍처를 설계하고, PostgreSQL과 Redis를 활용한 데이터·캐시 계층을 구성했습니다. 동시에 기존 LangGraph 멀티에이전트 시스템의 구조를 정리해, 팀이 이해하고 유지보수할 수 있는 형태로 문서화했습니다.",
+      "embed_text": "[Fingoo — Solution]\ncategory: Backend / Production Experience\n\nNestJS 기반 백엔드 아키텍처를 설계하고, PostgreSQL과 Redis를 활용한 데이터·캐시 계층을 구성했습니다. 동시에 기존 LangGraph 멀티에이전트 시스템의 구조를 정리해, 팀이 이해하고 유지보수할 수 있는 형태로 문서화했습니다.",
+      "content_hash": "sha256:30f2e787f6bf43ca19f711a420d9edb6fa1cfb8e0cb245c50b25192e5a62e896"
+    },
+    {
+      "id": "experience-perix-sentinel",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel",
+      "label": "Perix Sentinel",
+      "content": "Perix Sentinel (AI System / Automation, In Progress, 2026 – Present). 뉴스를 자동 수집·분석·스코어링해서 필요한 정보만 전달하는 AI 자동화 시스템. Tech: Python, FastAPI, LLM API, News/Data Pipeline, Discord API, Scoring System.",
+      "embed_text": "[Perix Sentinel]\ncategory: AI System / Automation\nkeywords: Python, FastAPI, LLM API, News/Data Pipeline, Discord API, Scoring System\n\nPerix Sentinel (AI System / Automation, In Progress, 2026 – Present). 뉴스를 자동 수집·분석·스코어링해서 필요한 정보만 전달하는 AI 자동화 시스템. Tech: Python, FastAPI, LLM API, News/Data Pipeline, Discord API, Scoring System.",
+      "content_hash": "sha256:43244ce355eedafe28fec638bea0f47e61f1e9cfce69ffd8e3fd9d2385b7f1e4"
+    },
+    {
+      "id": "experience-perix-sentinel-architecture",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-architecture",
+      "label": "Perix Sentinel — Architecture",
+      "content": "FastAPI Backend가 News/Data Pipeline → Scoring System → Discord 리포팅으로 이어지는 파이프라인을 오케스트레이션합니다.",
+      "embed_text": "[Perix Sentinel — Architecture]\ncategory: AI System / Automation\n\nFastAPI Backend가 News/Data Pipeline → Scoring System → Discord 리포팅으로 이어지는 파이프라인을 오케스트레이션합니다.",
+      "content_hash": "sha256:1c78fad47e2ed82587f936d25b00171b4f1f903b09fcf14c949bee866112585e"
+    },
+    {
+      "id": "experience-perix-sentinel-constraints",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-constraints",
+      "label": "Perix Sentinel — Constraints",
+      "content": "- 뉴스 소스마다 형식이 달라, 수집 단계에서 데이터 정규화가 필요합니다.\n- 스코어링 기준이 주관적일 수 있어, 반복적으로 검증하며 개선해야 합니다.",
+      "embed_text": "[Perix Sentinel — Constraints]\ncategory: AI System / Automation\n\n- 뉴스 소스마다 형식이 달라, 수집 단계에서 데이터 정규화가 필요합니다.\n- 스코어링 기준이 주관적일 수 있어, 반복적으로 검증하며 개선해야 합니다.",
+      "content_hash": "sha256:1509962836f28360af0c851a5f5f360e5f8eded88045f3cfbc3862216ed48890"
+    },
+    {
+      "id": "experience-perix-sentinel-decisions",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-decisions",
+      "label": "Perix Sentinel — Key Decisions",
+      "content": "- 사람이 매번 확인하지 않아도 되도록, 전달 채널을 Discord로 정하고 리포팅을 완전히 자동화하는 것을 목표로 삼았습니다.\n- Scoring 로직을 LLM API에 위임해, 규칙 기반 필터링보다 유연한 관련성 판단이 가능하도록 설계했습니다.",
+      "embed_text": "[Perix Sentinel — Key Decisions]\ncategory: AI System / Automation\n\n- 사람이 매번 확인하지 않아도 되도록, 전달 채널을 Discord로 정하고 리포팅을 완전히 자동화하는 것을 목표로 삼았습니다.\n- Scoring 로직을 LLM API에 위임해, 규칙 기반 필터링보다 유연한 관련성 판단이 가능하도록 설계했습니다.",
+      "content_hash": "sha256:c908aac3f38f428e24ae1964cd35c14d8a808b445af79519ab0af0bae666a8ea"
+    },
+    {
+      "id": "experience-perix-sentinel-learned",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-learned",
+      "label": "Perix Sentinel — What I Learned",
+      "content": "자동화 파이프라인에서는 수집 단계의 데이터 품질이 이후 모든 단계의 정확도를 좌우한다는 것을 체감하고 있습니다.",
+      "embed_text": "[Perix Sentinel — What I Learned]\ncategory: AI System / Automation\n\n자동화 파이프라인에서는 수집 단계의 데이터 품질이 이후 모든 단계의 정확도를 좌우한다는 것을 체감하고 있습니다.",
+      "content_hash": "sha256:3d6eb0cd2899dadfe3c560c1c9fdb66a905c7e3426a17178e33b045cc9ecfbbc"
+    },
+    {
+      "id": "experience-perix-sentinel-overview",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-overview",
+      "label": "Perix Sentinel — Overview",
+      "content": "Perix Sentinel은 뉴스를 자동으로 수집·분석·스코어링해서, 사용자에게 필요한 정보만 선별해 전달하는 AI 자동화 시스템입니다.",
+      "embed_text": "[Perix Sentinel — Overview]\ncategory: AI System / Automation\n\nPerix Sentinel은 뉴스를 자동으로 수집·분석·스코어링해서, 사용자에게 필요한 정보만 선별해 전달하는 AI 자동화 시스템입니다.",
+      "content_hash": "sha256:05a6b6475c66ddff5534fb1bd375c51a35caa0af8794d741f544128dd30ad21d"
+    },
+    {
+      "id": "experience-perix-sentinel-problem",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-problem",
+      "label": "Perix Sentinel — Problem",
+      "content": "매일 쏟아지는 뉴스 중 실제로 의미 있는 정보를 사람이 직접 걸러내는 데는 많은 시간이 듭니다. 관심 주제와 관련된 뉴스만 자동으로 스코어링해서 전달하는 파이프라인이 필요했습니다.",
+      "embed_text": "[Perix Sentinel — Problem]\ncategory: AI System / Automation\n\n매일 쏟아지는 뉴스 중 실제로 의미 있는 정보를 사람이 직접 걸러내는 데는 많은 시간이 듭니다. 관심 주제와 관련된 뉴스만 자동으로 스코어링해서 전달하는 파이프라인이 필요했습니다.",
+      "content_hash": "sha256:8637785b872ac07fec5966d5b494b267c3d5e8a1ac8ba4365ea9441eb8392654"
+    },
+    {
+      "id": "experience-perix-sentinel-result",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-result",
+      "label": "Perix Sentinel — Result",
+      "content": "현재 개발이 진행 중이며, 수집·스코어링·리포팅 파이프라인의 핵심 구조를 구현하고 있습니다. 구체적인 성과 지표는 프로젝트 완료 후 추가할 예정입니다.",
+      "embed_text": "[Perix Sentinel — Result]\ncategory: AI System / Automation\n\n현재 개발이 진행 중이며, 수집·스코어링·리포팅 파이프라인의 핵심 구조를 구현하고 있습니다. 구체적인 성과 지표는 프로젝트 완료 후 추가할 예정입니다.",
+      "content_hash": "sha256:78a09f1af4b222f9b17eb814f0c94998817f7b15f60d94f600fca69599bbe6a5"
+    },
+    {
+      "id": "experience-perix-sentinel-role",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-role",
+      "label": "Perix Sentinel — My Role",
+      "content": "기획부터 데이터 수집 파이프라인, Scoring 로직, Discord를 통한 자동 리포팅까지 전 과정을 개인적으로 설계하고 구현하고 있습니다.",
+      "embed_text": "[Perix Sentinel — My Role]\ncategory: AI System / Automation\n\n기획부터 데이터 수집 파이프라인, Scoring 로직, Discord를 통한 자동 리포팅까지 전 과정을 개인적으로 설계하고 구현하고 있습니다.",
+      "content_hash": "sha256:d08a62b8b8afdf4ccec0c199e78c0af0219140d3a2d3806312d8b5c9d25b3f05"
+    },
+    {
+      "id": "experience-perix-sentinel-solution",
+      "section": "experience",
+      "anchor": "experience-perix-sentinel-solution",
+      "label": "Perix Sentinel — Solution",
+      "content": "FastAPI 기반 Backend에서 News/Data Pipeline이 뉴스를 수집하고, LLM API를 활용해 관련성과 중요도를 Scoring합니다. 선별된 결과는 Discord API를 통해 자동으로 리포팅됩니다.",
+      "embed_text": "[Perix Sentinel — Solution]\ncategory: AI System / Automation\n\nFastAPI 기반 Backend에서 News/Data Pipeline이 뉴스를 수집하고, LLM API를 활용해 관련성과 중요도를 Scoring합니다. 선별된 결과는 Discord API를 통해 자동으로 리포팅됩니다.",
+      "content_hash": "sha256:e932e18df34c9124d24898262585fa33b6e78c587e7e6ee6246da954a41b715b"
+    },
+    {
+      "id": "experience-scpc-agent",
+      "section": "experience",
+      "anchor": "experience-scpc-agent",
+      "label": "SCPC Agent Project",
+      "content": "SCPC Agent Project (AI Agent / Competition, In Progress, 2026 – Present). 삼성 SCPC AI 대회를 위해 만든 메모리·계획·안전성을 포함한 Agent Harness. Tech: Python, LLM/SLM, Agent Harness, Memory, Planning, Safety, Structured JSON.",
+      "embed_text": "[SCPC Agent Project]\ncategory: AI Agent / Competition\nkeywords: Python, LLM/SLM, Agent Harness, Memory, Planning, Safety, Structured JSON\n\nSCPC Agent Project (AI Agent / Competition, In Progress, 2026 – Present). 삼성 SCPC AI 대회를 위해 만든 메모리·계획·안전성을 포함한 Agent Harness. Tech: Python, LLM/SLM, Agent Harness, Memory, Planning, Safety, Structured JSON.",
+      "content_hash": "sha256:03cf00c762ecfe40dbb1bb4fc1c18208e453f6f253099e1ba8578d3302fbdb9e"
+    },
+    {
+      "id": "experience-scpc-agent-architecture",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-architecture",
+      "label": "SCPC Agent Project — Architecture",
+      "content": "Python Agent Harness가 Memory, Planning, Safety 세 모듈을 오케스트레이션하며, LLM/SLM과의 모든 상호작용은 Structured JSON을 통해 이루어집니다.",
+      "embed_text": "[SCPC Agent Project — Architecture]\ncategory: AI Agent / Competition\n\nPython Agent Harness가 Memory, Planning, Safety 세 모듈을 오케스트레이션하며, LLM/SLM과의 모든 상호작용은 Structured JSON을 통해 이루어집니다.",
+      "content_hash": "sha256:cd73e63bb48fd4cc0192e7640bba26b22b7405942e26da6aed03b8ca489f6813"
+    },
+    {
+      "id": "experience-scpc-agent-constraints",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-constraints",
+      "label": "SCPC Agent Project — Constraints",
+      "content": "- 대회 규정에 맞는 평가 환경(Evaluation environment) 안에서 동작해야 합니다.\n- LLM/SLM의 출력이 Structured JSON 형식을 안정적으로 지켜야 후속 로직이 정상 동작합니다.",
+      "embed_text": "[SCPC Agent Project — Constraints]\ncategory: AI Agent / Competition\n\n- 대회 규정에 맞는 평가 환경(Evaluation environment) 안에서 동작해야 합니다.\n- LLM/SLM의 출력이 Structured JSON 형식을 안정적으로 지켜야 후속 로직이 정상 동작합니다.",
+      "content_hash": "sha256:03765a9aa145df9056ed3ca74e652f4b9c68f372e9cb9d1c901e2634ffa53f00"
+    },
+    {
+      "id": "experience-scpc-agent-decisions",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-decisions",
+      "label": "SCPC Agent Project — Key Decisions",
+      "content": "- Agent의 판단 근거를 추적할 수 있도록, 자유 형식 텍스트 대신 Structured JSON 출력을 표준으로 채택했습니다.\n- Safety를 사후 필터링이 아니라 Harness 구조 자체에 포함시켰습니다.",
+      "embed_text": "[SCPC Agent Project — Key Decisions]\ncategory: AI Agent / Competition\n\n- Agent의 판단 근거를 추적할 수 있도록, 자유 형식 텍스트 대신 Structured JSON 출력을 표준으로 채택했습니다.\n- Safety를 사후 필터링이 아니라 Harness 구조 자체에 포함시켰습니다.",
+      "content_hash": "sha256:35c1d8b5e1abe0eec78f6e7e19861a40b2c4612111ab9d6103a97fcc35394e25"
+    },
+    {
+      "id": "experience-scpc-agent-learned",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-learned",
+      "label": "SCPC Agent Project — What I Learned",
+      "content": "제한된 평가 환경에서는 Agent의 자유도보다 예측 가능성(Structured Output)이 더 중요한 설계 기준이 될 수 있다는 것을 배우고 있습니다.",
+      "embed_text": "[SCPC Agent Project — What I Learned]\ncategory: AI Agent / Competition\n\n제한된 평가 환경에서는 Agent의 자유도보다 예측 가능성(Structured Output)이 더 중요한 설계 기준이 될 수 있다는 것을 배우고 있습니다.",
+      "content_hash": "sha256:0111b9f8678c5df83ec63d49819363e8ca118526004bf9076761ad3e6c0ebf29"
+    },
+    {
+      "id": "experience-scpc-agent-overview",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-overview",
+      "label": "SCPC Agent Project — Overview",
+      "content": "SCPC Agent Project는 삼성 SCPC AI 대회를 위해 만든 Agent Harness입니다. Memory, Planning, Safety를 포함한 구조로 Device Agent를 구현하는 것을 목표로 합니다.",
+      "embed_text": "[SCPC Agent Project — Overview]\ncategory: AI Agent / Competition\n\nSCPC Agent Project는 삼성 SCPC AI 대회를 위해 만든 Agent Harness입니다. Memory, Planning, Safety를 포함한 구조로 Device Agent를 구현하는 것을 목표로 합니다.",
+      "content_hash": "sha256:8a1a57e2b1c4c950305b6e97768b12c5f3ee255ae9d52696219ef253e80bf725"
+    },
+    {
+      "id": "experience-scpc-agent-problem",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-problem",
+      "label": "SCPC Agent Project — Problem",
+      "content": "대회 환경에서는 Agent가 제한된 리소스와 평가 환경 안에서 안정적으로 계획을 세우고 실행해야 합니다. 단순 프롬프트 체이닝만으로는 Memory 유지나 Safety 보장이 어렵습니다.",
+      "embed_text": "[SCPC Agent Project — Problem]\ncategory: AI Agent / Competition\n\n대회 환경에서는 Agent가 제한된 리소스와 평가 환경 안에서 안정적으로 계획을 세우고 실행해야 합니다. 단순 프롬프트 체이닝만으로는 Memory 유지나 Safety 보장이 어렵습니다.",
+      "content_hash": "sha256:5be7272c8fcb238dedf992788188d31a727b70d740370b396713c400b6ebb68c"
+    },
+    {
+      "id": "experience-scpc-agent-result",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-result",
+      "label": "SCPC Agent Project — Result",
+      "content": "현재 대회를 목표로 개발이 진행 중이며, Agent Harness의 핵심 모듈(Memory, Planning, Safety)을 구현하고 있습니다. 구체적인 평가 결과는 대회 진행 후 추가할 예정입니다.",
+      "embed_text": "[SCPC Agent Project — Result]\ncategory: AI Agent / Competition\n\n현재 대회를 목표로 개발이 진행 중이며, Agent Harness의 핵심 모듈(Memory, Planning, Safety)을 구현하고 있습니다. 구체적인 평가 결과는 대회 진행 후 추가할 예정입니다.",
+      "content_hash": "sha256:568187446e68daa39b59837ae9bb270997f4ef94f739810a32130e3762b57c7c"
+    },
+    {
+      "id": "experience-scpc-agent-role",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-role",
+      "label": "SCPC Agent Project — My Role",
+      "content": "팀의 일원으로 Agent Harness 설계, Memory/Planning 모듈 구현, Structured JSON 기반 출력 형식 정의를 담당하고 있습니다.",
+      "embed_text": "[SCPC Agent Project — My Role]\ncategory: AI Agent / Competition\n\n팀의 일원으로 Agent Harness 설계, Memory/Planning 모듈 구현, Structured JSON 기반 출력 형식 정의를 담당하고 있습니다.",
+      "content_hash": "sha256:d2596ea278bb0677a01350c64a9e589a15719c09d16d5ce9d31620d119efee66"
+    },
+    {
+      "id": "experience-scpc-agent-solution",
+      "section": "experience",
+      "anchor": "experience-scpc-agent-solution",
+      "label": "SCPC Agent Project — Solution",
+      "content": "Python 기반 Agent Harness에 Memory와 Planning 모듈을 구성하고, 모든 Agent 출력이 Structured JSON 스키마를 따르도록 설계했습니다. Safety 계층을 두어 Agent가 허용된 행동 범위를 벗어나지 않도록 제어합니다.",
+      "embed_text": "[SCPC Agent Project — Solution]\ncategory: AI Agent / Competition\n\nPython 기반 Agent Harness에 Memory와 Planning 모듈을 구성하고, 모든 Agent 출력이 Structured JSON 스키마를 따르도록 설계했습니다. Safety 계층을 두어 Agent가 허용된 행동 범위를 벗어나지 않도록 제어합니다.",
+      "content_hash": "sha256:5eb426246713ca3ef9dba514d6ab3b6f4638ae1ad4894a774027d756e6fb964d"
+    },
+    {
+      "id": "experience-sentinel-club",
+      "section": "experience",
+      "anchor": "experience-sentinel-club",
+      "label": "Sentinel Club",
+      "content": "Sentinel Club (AI Agent / Personal Product, In Progress, 2026 – Present). 여러 AI 모델을 사용자가 직접 연결해서 쓸 수 있도록 설계한 개인용 AI Agent 플랫폼. Tech: Python, LLM APIs, Multi-Agent Orchestration, Docker, Local/BYOM, Logging & Safety.",
+      "embed_text": "[Sentinel Club]\ncategory: AI Agent / Personal Product\nkeywords: Python, LLM APIs, Multi-Agent Orchestration, Docker, Local/BYOM, Logging & Safety\n\nSentinel Club (AI Agent / Personal Product, In Progress, 2026 – Present). 여러 AI 모델을 사용자가 직접 연결해서 쓸 수 있도록 설계한 개인용 AI Agent 플랫폼. Tech: Python, LLM APIs, Multi-Agent Orchestration, Docker, Local/BYOM, Logging & Safety.",
+      "content_hash": "sha256:e3008e9bfe92d12d0992990c89b979587d9772c664aa42cd6aa46f36332614f9"
+    },
+    {
+      "id": "experience-sentinel-club-architecture",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-architecture",
+      "label": "Sentinel Club — Architecture",
+      "content": "Python 기반 Agent Orchestration 서비스가 여러 LLM Provider를 BYOM 방식으로 연결하고, Docker 컨테이너 단위로 실행됩니다. Logging & Safety 계층이 모든 Agent 실행을 기록합니다.",
+      "embed_text": "[Sentinel Club — Architecture]\ncategory: AI Agent / Personal Product\n\nPython 기반 Agent Orchestration 서비스가 여러 LLM Provider를 BYOM 방식으로 연결하고, Docker 컨테이너 단위로 실행됩니다. Logging & Safety 계층이 모든 Agent 실행을 기록합니다.",
+      "content_hash": "sha256:490c03aabbfd16ae1a1386fb462a912805d7b1bd6cf9c8a4c02407a0596e778d"
+    },
+    {
+      "id": "experience-sentinel-club-constraints",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-constraints",
+      "label": "Sentinel Club — Constraints",
+      "content": "- 개인 프로젝트로 진행 중이라 리소스와 시간이 제한적입니다.\n- BYOM 구조상 다양한 LLM Provider의 API 스펙 차이를 흡수해야 합니다.",
+      "embed_text": "[Sentinel Club — Constraints]\ncategory: AI Agent / Personal Product\n\n- 개인 프로젝트로 진행 중이라 리소스와 시간이 제한적입니다.\n- BYOM 구조상 다양한 LLM Provider의 API 스펙 차이를 흡수해야 합니다.",
+      "content_hash": "sha256:54409eaa88b3dd94912d670db68313806025f057f75021939d1d09586399cd99"
+    },
+    {
+      "id": "experience-sentinel-club-decisions",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-decisions",
+      "label": "Sentinel Club — Key Decisions",
+      "content": "- 특정 LLM Provider에 종속되지 않도록, 처음부터 BYOM을 핵심 구조로 설계했습니다.\n- Agent 동작을 신뢰할 수 있도록 Logging & Safety를 부가 기능이 아닌 핵심 구성 요소로 두었습니다.",
+      "embed_text": "[Sentinel Club — Key Decisions]\ncategory: AI Agent / Personal Product\n\n- 특정 LLM Provider에 종속되지 않도록, 처음부터 BYOM을 핵심 구조로 설계했습니다.\n- Agent 동작을 신뢰할 수 있도록 Logging & Safety를 부가 기능이 아닌 핵심 구성 요소로 두었습니다.",
+      "content_hash": "sha256:c08b8b76a96f135cebcc940401c3668e681b211dfb0941611d480cb6fd80060a"
+    },
+    {
+      "id": "experience-sentinel-club-learned",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-learned",
+      "label": "Sentinel Club — What I Learned",
+      "content": "개인 프로젝트에서도 처음부터 확장 가능한 구조(BYOM)를 잡아두면, 이후 리팩토링 비용이 크게 줄어든다는 것을 체감하고 있습니다.",
+      "embed_text": "[Sentinel Club — What I Learned]\ncategory: AI Agent / Personal Product\n\n개인 프로젝트에서도 처음부터 확장 가능한 구조(BYOM)를 잡아두면, 이후 리팩토링 비용이 크게 줄어든다는 것을 체감하고 있습니다.",
+      "content_hash": "sha256:436b17f76a14e8f512f182e566b22d25f65bf38ef20eeaeda91dd2adfc082a18"
+    },
+    {
+      "id": "experience-sentinel-club-overview",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-overview",
+      "label": "Sentinel Club — Overview",
+      "content": "Sentinel Club은 사용자가 원하는 AI 모델을 직접 연결(BYOM)해서 사용할 수 있는 개인용 AI Agent 플랫폼입니다. Multi-agent orchestration을 중심으로, 여러 Agent가 협업해 작업을 수행하는 구조를 목표로 합니다.",
+      "embed_text": "[Sentinel Club — Overview]\ncategory: AI Agent / Personal Product\n\nSentinel Club은 사용자가 원하는 AI 모델을 직접 연결(BYOM)해서 사용할 수 있는 개인용 AI Agent 플랫폼입니다. Multi-agent orchestration을 중심으로, 여러 Agent가 협업해 작업을 수행하는 구조를 목표로 합니다.",
+      "content_hash": "sha256:0c535e2a04c4f62e41e84db7b531ea5f6ddf624dd616d464852540babd57b7ad"
+    },
+    {
+      "id": "experience-sentinel-club-problem",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-problem",
+      "label": "Sentinel Club — Problem",
+      "content": "상용 AI Agent 서비스 대부분은 특정 모델·벤더에 종속되어 있어, 사용자가 원하는 모델을 자유롭게 선택하기 어렵습니다. 또한 개인이 여러 Agent를 안전하게 운용할 수 있는 로깅·모니터링 체계를 갖춘 도구도 흔치 않습니다.",
+      "embed_text": "[Sentinel Club — Problem]\ncategory: AI Agent / Personal Product\n\n상용 AI Agent 서비스 대부분은 특정 모델·벤더에 종속되어 있어, 사용자가 원하는 모델을 자유롭게 선택하기 어렵습니다. 또한 개인이 여러 Agent를 안전하게 운용할 수 있는 로깅·모니터링 체계를 갖춘 도구도 흔치 않습니다.",
+      "content_hash": "sha256:6953fddb4bfe4705d3d864719a8d74ab5d527159b4b1be3e48c2b22848826833"
+    },
+    {
+      "id": "experience-sentinel-club-result",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-result",
+      "label": "Sentinel Club — Result",
+      "content": "현재 개발이 진행 중이며, 핵심 Orchestration 및 BYOM 연결 구조를 구현하고 있습니다. 구체적인 성과 지표는 프로젝트 완료 후 추가할 예정입니다.",
+      "embed_text": "[Sentinel Club — Result]\ncategory: AI Agent / Personal Product\n\n현재 개발이 진행 중이며, 핵심 Orchestration 및 BYOM 연결 구조를 구현하고 있습니다. 구체적인 성과 지표는 프로젝트 완료 후 추가할 예정입니다.",
+      "content_hash": "sha256:da96985379a6c224dac12f8773eb528714ca26ef39f7ddc4f94fce03b89a2107"
+    },
+    {
+      "id": "experience-sentinel-club-role",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-role",
+      "label": "Sentinel Club — My Role",
+      "content": "개인 프로젝트로 기획부터 Agent Orchestration 구조 설계, Backend/Infra 구현까지 전 과정을 담당하고 있습니다.",
+      "embed_text": "[Sentinel Club — My Role]\ncategory: AI Agent / Personal Product\n\n개인 프로젝트로 기획부터 Agent Orchestration 구조 설계, Backend/Infra 구현까지 전 과정을 담당하고 있습니다.",
+      "content_hash": "sha256:7a201b9d330dee8ddc21cdf0f75288c211e0561ff22386e74f4f39583a227ca2"
+    },
+    {
+      "id": "experience-sentinel-club-solution",
+      "section": "experience",
+      "anchor": "experience-sentinel-club-solution",
+      "label": "Sentinel Club — Solution",
+      "content": "Python 기반으로 Multi-Agent Orchestration 계층을 구축하고, 사용자가 자신의 LLM API 키를 등록해 원하는 모델을 연결(BYOM)할 수 있도록 설계했습니다. Docker로 배포 단위를 분리하고, Logging & Safety 계층을 통해 Agent 동작을 추적합니다.",
+      "embed_text": "[Sentinel Club — Solution]\ncategory: AI Agent / Personal Product\n\nPython 기반으로 Multi-Agent Orchestration 계층을 구축하고, 사용자가 자신의 LLM API 키를 등록해 원하는 모델을 연결(BYOM)할 수 있도록 설계했습니다. Docker로 배포 단위를 분리하고, Logging & Safety 계층을 통해 Agent 동작을 추적합니다.",
+      "content_hash": "sha256:f69323a3711e4c2c835e7ddf7d5d87b2045bc73950191f798a517d18ec0ba411"
+    },
+    {
+      "id": "how-i-work",
+      "section": "how-i-work",
+      "anchor": "how-i-work",
+      "label": "How I Work",
+      "content": "외주 개발 프로세스는 다음을 기본으로 합니다.\n\n```text\n① Client Specification\n        ↓\n② Requirement Meeting\n        ↓\n③ PRD\n        ↓\n④ Client Review\n        ↓\n⑤ SDD / Architecture\n        ↓\n⑥ Development\n        ↓\n⑦ Functional Completion\n        ↓\n⑧ Handover\n        ↓\n⑨ One After-Service\n```\n\n### Documentation Transparency\n\nPRD 및 SDD는 완료 후 전달하는 산출물이 아니라, **작성되는 시점부터 클라이언트와 공유**합니다.\n\n목적:\n\n- 개발 과정의 Black Box 제거\n- 요구사항 오해 방지\n- 아키텍처 의사결정 공유\n- 인수인계 비용 감소\n\n### Completion Definition\n\n프로젝트 기본 완료 조건:\n\n- 합의된 기능 구현 완료\n- 테스트 완료\n- 코드 및 문서 인수인계\n- 1회 사후지원\n\nAS의 구체적인 기간/범위는 계약 단계에서 별도로 정의합니다.",
+      "embed_text": "[How I Work]\nkeywords: process, documentation, completion\n\n외주 개발 프로세스는 다음을 기본으로 합니다.\n\n```text\n① Client Specification\n        ↓\n② Requirement Meeting\n        ↓\n③ PRD\n        ↓\n④ Client Review\n        ↓\n⑤ SDD / Architecture\n        ↓\n⑥ Development\n        ↓\n⑦ Functional Completion\n        ↓\n⑧ Handover\n        ↓\n⑨ One After-Service\n```\n\n### Documentation Transparency\n\nPRD 및 SDD는 완료 후 전달하는 산출물이 아니라, **작성되는 시점부터 클라이언트와 공유**합니다.\n\n목적:\n\n- 개발 과정의 Black Box 제거\n- 요구사항 오해 방지\n- 아키텍처 의사결정 공유\n- 인수인계 비용 감소\n\n### Completion Definition\n\n프로젝트 기본 완료 조건:\n\n- 합의된 기능 구현 완료\n- 테스트 완료\n- 코드 및 문서 인수인계\n- 1회 사후지원\n\nAS의 구체적인 기간/범위는 계약 단계에서 별도로 정의합니다.",
+      "content_hash": "sha256:d1b4fddc1315e85793996cb435838c591a81b1c20470a3a9ac34c819e62d064a"
+    },
+    {
+      "id": "skills",
+      "section": "skills",
+      "anchor": "skills",
+      "label": "Skills",
+      "content": "### Core\n\n- Backend Engineering\n- AI Agent Engineering\n- LLM Application Development\n- System Architecture\n\n### Backend\n\n- TypeScript\n- NestJS\n- Python\n- FastAPI\n- PostgreSQL\n- Redis\n- REST API\n- Supabase\n\n### AI / Agent\n\n- OpenAI / Anthropic-compatible LLM APIs\n- Tool Calling\n- RAG\n- Agent Orchestration\n- Multi-Agent Workflow\n- Context Management\n- Agent Memory\n- Evaluation / Tracing\n- Structured Output\n\n### Infrastructure\n\n- Docker\n- AWS\n- Vercel\n- GitHub\n- Basic Observability\n\n기술 로고를 많이 보여주는 것이 목적이 아닙니다. Case Study를 통해 실제 사용 경험을 증명할 수 있는 기술을 우선 노출합니다.",
+      "embed_text": "[Skills & Stack]\nkeywords: skills, stack, tech\n\n### Core\n\n- Backend Engineering\n- AI Agent Engineering\n- LLM Application Development\n- System Architecture\n\n### Backend\n\n- TypeScript\n- NestJS\n- Python\n- FastAPI\n- PostgreSQL\n- Redis\n- REST API\n- Supabase\n\n### AI / Agent\n\n- OpenAI / Anthropic-compatible LLM APIs\n- Tool Calling\n- RAG\n- Agent Orchestration\n- Multi-Agent Workflow\n- Context Management\n- Agent Memory\n- Evaluation / Tracing\n- Structured Output\n\n### Infrastructure\n\n- Docker\n- AWS\n- Vercel\n- GitHub\n- Basic Observability\n\n기술 로고를 많이 보여주는 것이 목적이 아닙니다. Case Study를 통해 실제 사용 경험을 증명할 수 있는 기술을 우선 노출합니다.",
+      "content_hash": "sha256:7204bf6d5be456083b1c9caf9ce5d88ab0000c2dcbaad0cfbbb83f3fc43719d7"
+    },
+    {
+      "id": "what-i-build",
+      "section": "what-i-build",
+      "anchor": "what-i-build",
+      "label": "What I Build",
+      "content": "### Backend API Development\n\n- REST API\n- Backend Architecture\n- Database Design\n- Authentication / Authorization\n- Cache\n- External API Integration\n- Backend Refactoring\n\n### AI Agent Development\n\n- LLM Application\n- Tool-using Agent\n- Agent Workflow\n- RAG\n- Context-aware Agent\n- Multi-Agent System\n- AI Automation\n- Agent Backend\n\n### 제공 범위\n\n```text\nIdea Clarification\n→ Scope Definition\n→ Architecture\n→ Development\n```\n\n지속적인 Production Operation은 기본 서비스 범위에서 제외합니다.",
+      "embed_text": "[What I Build]\nkeywords: backend, ai agent, services\n\n### Backend API Development\n\n- REST API\n- Backend Architecture\n- Database Design\n- Authentication / Authorization\n- Cache\n- External API Integration\n- Backend Refactoring\n\n### AI Agent Development\n\n- LLM Application\n- Tool-using Agent\n- Agent Workflow\n- RAG\n- Context-aware Agent\n- Multi-Agent System\n- AI Automation\n- Agent Backend\n\n### 제공 범위\n\n```text\nIdea Clarification\n→ Scope Definition\n→ Architecture\n→ Development\n```\n\n지속적인 Production Operation은 기본 서비스 범위에서 제외합니다.",
+      "content_hash": "sha256:a75b9ac2a300207f4bac8dcf0311a7ada6b57a05104e1de36c1458559bdace06"
+    }
+  ]
+}

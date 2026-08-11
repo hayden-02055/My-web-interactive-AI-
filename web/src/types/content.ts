@@ -42,11 +42,16 @@ export type CaseStudySectionContent = {
   heading: string;
   anchor: string;
   html: string;
+  // Raw Markdown body of this H2 (pre-render) — SDD-02 §4.1 `content`/`embed_text`
+  // need plain source text, not rendered HTML.
+  text: string;
 };
 
 export type Section = SectionFrontmatter & {
   anchor: string;
   html: string;
+  // Raw Markdown body (pre-render) — see CaseStudySectionContent.text.
+  text: string;
 };
 
 export type CaseStudy = CaseStudyFrontmatter & {

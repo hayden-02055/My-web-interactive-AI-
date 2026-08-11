@@ -173,11 +173,20 @@ ALLOWED_ORIGINS=http://localhost:3000
 LLM_API_KEY=
 EMBEDDING_API_KEY=
 
+EMBEDDING_PROVIDER=openai
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536
+KNOWLEDGE_INDEX_PATH=data/knowledge.json
+RETRIEVAL_TOP_K=4
+RETRIEVAL_MIN_SCORE=0.3
+
 REDIS_URL=redis://localhost:6379
 
 RATE_LIMIT_PER_MINUTE=10
 RATE_LIMIT_PER_DAY=200
 ```
+
+> `EMBEDDING_*` · `KNOWLEDGE_INDEX_PATH` · `RETRIEVAL_*`는 SDD-02 §8에서 추가됐다.
 
 `web/.env.example`
 
@@ -191,7 +200,22 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8000
 - 시크릿은 Railway / Vercel 대시보드에서 관리한다
 - `NEXT_PUBLIC_` 변수에 시크릿을 담지 않는다 (INV-06)
 
-## 6.8 Documentation
+## 6.8 Knowledge Index Workflow (SDD-02 §7.2)
+
+콘텐츠(`web/src/content/`)를 수정한 뒤에는 다음 순서로 인덱스를 갱신하고, 산출물을 콘텐츠와 함께 커밋한다.
+
+```bash
+pnpm validate:content
+pnpm build:knowledge-source
+uv run python scripts/build_knowledge.py     # 변경분만 임베딩 (api/ 디렉토리에서 실행)
+git add web/src/content api/data
+```
+
+- `build:knowledge-source`(TS)는 파싱과 청킹을 담당하고, `build_knowledge.py`(Python)는 임베딩만 담당한다 (DD-06) — Python이 Markdown을 직접 파싱하지 않는다
+- `api/data/knowledge.source.json` · `api/data/knowledge.json`은 빌드 산출물이지만 **커밋한다** (AD-07) — 콘텐츠와 인덱스가 항상 같은 커밋에 있어야 CI drift gate(§7.1)가 성립한다
+- 인덱스 갱신을 누락하면 CI에서 두 단계 중 하나가 실패한다: Stage A(`web.yml`)는 `knowledge.source.json`이 콘텐츠와 어긋났을 때, Stage B(`api.yml`)는 `knowledge.json`이 `knowledge.source.json`과 어긋났을 때
+
+## 6.9 Documentation
 
 - PRD·SDD는 `docs/` 하위에 커밋하며, 작성 시점부터 공유한다 (PRD §8.4)
 - SDD 파일명: `SDD-<번호>-<슬러그>.md`

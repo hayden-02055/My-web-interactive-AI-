@@ -5,7 +5,7 @@
 | **Document** | SDD-00 |
 | **Title** | Foundation & Architecture |
 | **Status** | Draft |
-| **Version** | v0.2 |
+| **Version** | v0.3 |
 | **Upstream** | Interactive AI Portfolio — PRD v0.1 |
 | **Author** | 박해원 |
 | **Phase** | 1단계 · 기반 |
@@ -505,11 +505,20 @@ ALLOWED_ORIGINS=http://localhost:3000
 LLM_API_KEY=
 EMBEDDING_API_KEY=
 
+EMBEDDING_PROVIDER=openai
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDING_DIMENSIONS=1536
+KNOWLEDGE_INDEX_PATH=data/knowledge.json
+RETRIEVAL_TOP_K=4
+RETRIEVAL_MIN_SCORE=0.3
+
 REDIS_URL=redis://localhost:6379
 
 RATE_LIMIT_PER_MINUTE=10
 RATE_LIMIT_PER_DAY=200
 ```
+
+> `EMBEDDING_*` · `KNOWLEDGE_INDEX_PATH` · `RETRIEVAL_*`는 SDD-02 §8에서 추가됐다.
 
 `web/.env.example`
 
@@ -569,22 +578,28 @@ LLM 판단이 아니라 **결정론적 게이트가 머지 조건**이다.
 ```text
 pnpm install --frozen-lockfile
 pnpm validate:content
+pnpm build:knowledge-source
+git diff --exit-code ../api/data/knowledge.source.json
 pnpm lint
 pnpm typecheck
 pnpm build
 ```
 
 > `validate:content`는 SDD-01 §4에서 정의하는 콘텐츠 스키마 검증 게이트다.
+> `build:knowledge-source` + `git diff`는 §8.3 drift gate의 Stage A(SDD-02 §7.1)다.
 
 ### 8.2 API (`.github/workflows/api.yml`)
 
 ```text
 uv sync --frozen
+uv run python scripts/build_knowledge.py --check
 ruff check
 ruff format --check
 mypy app
 pytest
 ```
+
+> `build_knowledge.py --check`는 §8.3 drift gate의 Stage B(SDD-02 §7.1)다.
 
 ### 8.3 Knowledge Index Drift Check
 
@@ -598,7 +613,7 @@ python scripts/build_knowledge.py --check
 - 임베딩 벡터를 제외한 **구조·청크 텍스트 해시**를 비교 대상으로 한다 (임베딩 호출 비용 회피)
 - 불일치 시 CI 실패
 
-> 이 게이트의 상세 구현은 SDD-02에서 정의한다. SDD-00은 **게이트의 존재와 위치**만 확정한다.
+> 상세 구현: SDD-02 §7 (2단계 검사 — Stage A는 §8.1, Stage B는 §8.2에 반영됨).
 
 ---
 
@@ -654,3 +669,4 @@ SDD-00은 FR을 직접 구현하지 않으며, FR-01 ~ FR-12는 SDD-01 이후에
 |---|---|---|
 | v0.1 | 2026-08-07 | 최초 작성 |
 | v0.2 | 2026-08-11 | SDD-01 D-10 — §8.1에 `pnpm validate:content` 게이트 추가 |
+| v0.3 | 2026-08-11 | SDD-02 D-19 — §8.3 drift gate 구현을 §8.1(Stage A)·§8.2(Stage B)에 반영 |
