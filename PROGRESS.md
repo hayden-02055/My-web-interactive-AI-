@@ -96,12 +96,26 @@
     2. **프론트엔드**: `AgentProvider`의 세션 복원 완료 플래그가 `useRef`였는데, ref는 동기로 즉시 바뀌지만 짝을 이루는 `setState`는 다음 렌더까지 반영되지 않아 — 마운트 시 "복원 완료 플래그는 true, 그런데 state는 아직 복원 전 빈 배열"인 순간에 저장 이펙트가 끼어들어 **방금 sessionStorage에서 읽어온 대화를 빈 배열로 덮어써버렸다.** 60개 메시지를 시딩한 뒤 새로고침하는 테스트로 재현(저장 결과가 0개로 나와 발견), 플래그를 `useState`로 바꿔 두 값이 항상 같은 렌더에서 갱신되도록 수정 후 정확히 50개(`MAX_MESSAGES`)로 절삭되는 것 확인.
   - 확인 못한 것 / 배포 인프라 필요: 실기기 가상 키보드 겹침(M-06, 스펙 자체가 에뮬레이터로 재현 불가 명시), Railway/Vercel 환경변수 설정과 프로덕션 URL SSE 동작(L-03/L-05/L-06, 배포 권한 없음), 실기기 iOS/Android 확인(L-08).
 
+- UI Refactoring (`docs/refactoring/UI_REFACTORING.md`, `refactor/ui-overhaul` 브랜치, `develop` 대비 커밋 전) — Phase 0~7 전부 구현
+  - Phase 0: `globals.css` `@theme inline`에 spacing 토큰(`--space-1..9`, 4~96px), radius 토큰(`--radius-pill`/`--radius-card`), `--breakpoint-lg`를 1024→1200px로 재정의(문서 §12 Desktop/Tablet 경계에 맞춤 — FAB/Agent 컬럼 전환 시점도 함께 1200px로 이동)
+  - Phase 1: `PortfolioLayout.tsx` 컨테이너 `max-w-6xl`→`max-w-[1320px]`, agent 컬럼 320→360px, 모바일 padding 24→20px; `components/ui/{Button,Chip}.tsx` 신규(기존 4종 pill 버튼/3종 chip 중복 통합) — `portfolio`/`agent` 어느 쪽도 아닌 제3의 모듈로 양쪽에서 import(SDD-01 §6.3 불변식 유지)
+  - Phase 2: `components/ui/SectionTitle.tsx`(H2 중복 제거), `globals.css`에 H1~Meta 타이포그래피 컨벤션 주석으로 명문화, Hero 역할 문구(`**Backend / AI Agent Engineer**`)에 `#hero .prose-content > p:first-of-type` scoped Lead 스타일 추가
+  - Phase 3: `HeroSection.tsx` `py-20`→`py-16`(다른 섹션과 동일 간격으로 통일)
+  - Phase 4: `AgentPanel.tsx` 높이 420→480px(넓어진 컬럼 폭 비례), 더 이상 존재하지 않는 `AgentSlotPlaceholder`를 가리키던 stale 주석 정리, `AgentOverlay.tsx` 닫기 버튼 탭 영역 32→44px(§15 mobile tap target), `AgentFab`/`AgentOverlay` 닫기 버튼에 `focus-visible` 링 추가
+  - Phase 5: `SectionContainer`/`CaseStudyList` 컴포넌트는 변경 없이 `globals.css`에 섹션 `id` 스코프 CSS만 추가 — About/What I Build는 CSS multi-column(`break-after: avoid-column`으로 heading을 뒤따르는 콘텐츠에 접착, nth-of-type 페어링보다 콘텐츠 구조 변화에 안전), Skills는 `ul`→flex chip cloud, Contact는 `ul`→bordered rows, How I Work는 pipeline `pre` 블록에 border+bg로 카드감 부여. 마크다운/`lib/content/**` 데이터는 전혀 건드리지 않음
+  - Phase 6: `lg` 재정의 후 tablet(768~1199px) 폭에서 콘텐츠 섹션은 `md`(768px) 기준 2단 그리드를 유지하되 Agent는 FAB로 전환됨을 확인 — Playwright로 1440px에서 대화 후 900px로 리사이즈해도 `AgentProvider` 상태(대화 내역)가 보존됨을 실측(핵심 불변식)
+  - Phase 7: `SuggestionCard`/`XrayPipeline`(토글 버튼 2종)/`XrayDetail`(결과 링크 버튼)에 `focus-visible` 링 추가 — 기존 `rounded-2xl`(top-level)/`rounded-xl`(nested)/`rounded-full`(pill) 3단 radius 체계는 이미 일관되어 있어 추가 변경 없음
+  - 검증: 매 Phase 종료 시 `pnpm lint/typecheck/build/test/test:e2e` 전부 통과(28 vitest + 2 e2e, 매 phase마다 재확인), 최종적으로 `pnpm validate:content`/`check:bundle-secrets`도 통과. Playwright로 desktop(1440)/tablet(900,1050,1200 경계)/mobile(390) 스크린샷 확인, mobile 가로 스크롤 0px 확인, dark mode(`prefers-color-scheme`) 스크린샷으로 색상 토큰 정상 작동 확인. Agent 메시지 내부 컴포넌트(SuggestionCard/XrayPipeline/MvpOutlineBlock)는 `lib/agent/fixtures.ts`(F-01)를 `page.route()`로 가로채 데스크톱 패널·모바일 오버레이 양쪽에서 실제 렌더 확인.
+  - **계획에서 의도적으로 벗어난 것**: `Card` 프리미티브 추출을 보류함 — 계획 수립 단계에서는 5개 기존 사이트(`CaseStudyCard`/`AgentPanel`/`MvpOutlineBlock`/`XrayPipeline`/`SuggestionCard`)의 중복을 근거로 추출을 승인받았으나, 실제 구현 중 각 사이트가 `article` 시맨틱, `id`/`data-agent-case-study` 속성, agent 전용 flex/height 레이아웃 등 서로 다른 구조적 요구사항을 갖고 있어 무리하게 하나의 컴포넌트로 통합하면 오히려 과도한 다형성(polymorphism)이 필요해 SDD 자체의 "reuse when repetition exists, don't abstract for its own sake" 원칙(§17)에 반한다고 판단. 대신 Phase 0에서 만든 `--radius-card`/`--radius-pill` 토큰 값이 기존 `rounded-2xl`/`rounded-full`과 이미 정확히 일치함을 확인하고, 기존 5개 사이트는 그대로 두었다.
+  - 확인 못한 것: 실기기(iOS/Android) 시각 확인, Lighthouse 재측정(SDD-08 §7 수치가 이번 변경으로 유효한지 미확인 — CSS-only 변경이라 회귀 가능성은 낮다고 판단하나 실측 안 함), `develop` 브랜치로의 머지/PR 여부는 사용자 결정 대기.
+
 ## 진행 중인 것
 
 - 없음 (이번 세션 작업 자체는 완료. 단, 아래 "다음 단계"의 항목들은 미해결 상태로 남아있음)
 
 ## 다음 단계
 
+- **[UI Refactoring 후속]** `refactor/ui-overhaul` 브랜치는 아직 `develop`에 머지되지 않음 — 커밋/PR 여부는 사용자 확인 필요(작업 지시에 없어 자동 커밋하지 않음). 머지 전 실기기 확인과 Lighthouse 재측정 권장.
 - **[출시 전 배포 작업 필요, 에이전트가 수행 불가]** Railway·Vercel 환경변수 설정(`.env.example` 대조), 프로덕션 도메인을 `ALLOWED_ORIGINS`에 추가, 프로덕션 URL에서 SSE 실동작 확인, 실기기(iOS·Android) 모바일 확인 — SDD-08 §6 L-03/L-05/L-06/L-08.
 - **[SDD-03 프롬프트 튜닝, 부분 해결]** 시스템 프롬프트를 고쳐 마크다운 링크·tool 이름 노출은 사라졌지만, 모델이 여전히 `suggest_section`을 호출하지 않고 말로만 안내하는 경우가 남아있다(gpt-4o-mini의 한계로 추정). 더 강한 모델 또는 few-shot 예시 추가가 다음 시도 후보 — Post-MVP.
 - 검색 품질: 명확한 질의 8개 중 top-1 정확도 4/8 (top-4 포함 6/8) — 콘텐츠 본문이 이번에도 바뀌지 않아 SDD-02 §6.4 수치가 그대로 유효하다(SDD-08 §7에 재확인 기록). 원인은 Case Study `Overview` 절의 콘텐츠 밀도 문제, 실제로 본문을 고쳐 개선하려면 `calibrate_retrieval.py` 재실행 필요.
@@ -135,3 +149,6 @@
 - `check-bundle-secrets.ts`는 `.next/server`가 아니라 `.next/static`만 스캔한다 — 서버 전용 코드는 브라우저로 전송되지 않으므로 시크릿이 있어도 정상이고, 거기까지 스캔하면 오탐만 늘어난다.
 - Playwright E2E(`playwright.config.ts`)는 자체 `webServer.command`로 `next build && next start`를 실행해 **매번 새로 빌드**한다 — `NEXT_PUBLIC_API_BASE_URL`이 빌드 타임에 번들에 박히는 값이라, 이미 떠 있는 개발 서버를 재사용하면 원하는 "도달 불가 주소"가 실제로 반영됐는지 보장할 수 없기 때문. CI 시간이 늘어나는 대가를 감수했다.
 - CI에서 E2E를 기존 `ci` job에 합치지 않고 별도 `e2e` job으로 분리했다 — Playwright 브라우저 설치(`--with-deps`)가 무겁고, 실패 시 원인(단위 테스트 vs E2E)을 빠르게 구분하기 위함.
+- UI Refactoring에서 `--breakpoint-lg`를 1024→1200px로 재정의하면서, tablet 폭(768~1199px) 전체가 Agent 컬럼 기준으로는 "mobile"(FAB+오버레이) 취급을 받는다 — `UI_REFACTORING.md` §12는 tablet에서 "두 칼럼을 유지한 채 Agent 폭만 줄이는" 것을 제안했지만, 900px 안팎에서 본문+360px Agent 컬럼을 동시에 유지하려면 본문 폭이 지나치게 좁아져 오히려 가독성이 나빠진다고 판단해 FAB 전환 시점을 그대로 1200px 하나로 통일했다. `md`(768px)는 콘텐츠 섹션(About/What I Build 2단 그리드)에만 독립적으로 쓰고 Agent 컬럼과는 무관하다.
+- About/What I Build 섹션의 2단 레이아웃은 `nth-of-type` 기반으로 heading+본문을 페어링하는 대신 CSS multi-column(`column-count:2`)에 `break-after: avoid-column`을 헤딩에 걸어 뒤따르는 콘텐츠를 "접착"하는 방식을 썼다 — about.md는 4쌍(h3+p)으로 균일하지만 what-i-build.md는 3번째 h3 아래에 `ul` 대신 `pre`+`p`가 오는 비균일 구조라, 요소 개수를 세는 페어링 로직은 콘텐츠가 조금만 바뀌어도 조용히 깨진다. multi-column은 요소 개수에 의존하지 않아 더 안전하다고 판단.
+- Phase 5에서 계획했던 `Card` 프리미티브 추출은 보류했다 — 상세 사유는 위 "완료된 것"의 UI Refactoring 항목 참고. 필요해지면(예: About/What I Build를 실제 카드형으로 바꾸는 후속 작업이 생기면) 그때 실사용처를 보고 다시 설계하는 게 낫다고 판단.

@@ -40,7 +40,7 @@ export function SuggestionCard({ suggestion }: SuggestionCardProps) {
       type="button"
       onClick={handleClick}
       disabled={!available}
-      className={`flex w-full flex-col items-start gap-0.5 rounded-xl border px-3 py-2 text-left text-xs transition-colors disabled:cursor-not-allowed disabled:opacity-40 ${
+      className={`flex w-full flex-col items-start gap-0.5 rounded-xl border px-3 py-2 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:opacity-40 ${
         isContact
           ? "border-accent bg-accent text-accent-foreground hover:opacity-90"
           : "border-border bg-surface text-text hover:bg-surface-muted"

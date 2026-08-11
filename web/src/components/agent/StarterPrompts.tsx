@@ -1,5 +1,6 @@
 "use client";
 
+import { Chip } from "@/components/ui/Chip";
 import { STARTER_PROMPTS } from "@/lib/agent/starterPrompts";
 import { useAgent } from "./AgentProvider";
 
@@ -10,14 +11,9 @@ export function StarterPrompts() {
   return (
     <div className="flex flex-wrap gap-1.5">
       {STARTER_PROMPTS.map((prompt) => (
-        <button
-          key={prompt}
-          type="button"
-          onClick={() => setComposerValue(prompt)}
-          className="rounded-full border border-border px-2.5 py-1 text-[11px] text-text-muted transition-colors hover:bg-surface-muted hover:text-text"
-        >
+        <Chip key={prompt} size="action" onClick={() => setComposerValue(prompt)}>
           {prompt}
-        </button>
+        </Chip>
       ))}
     </div>
   );

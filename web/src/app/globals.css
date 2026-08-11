@@ -27,6 +27,32 @@
   --color-accent-foreground: var(--accent-foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
+  /* UI Refactoring §6 — spacing scale, consumed via arbitrary-value utilities
+   * (e.g. gap-[var(--space-6)]). Named "space", not "spacing": "spacing" is
+   * Tailwind v4's reserved namespace for the numeric p, gap, m scale, and
+   * this scale's values (24/32/48/64/96px) diverge from Tailwind's defaults
+   * (20/24/28/32/36px) — reusing the reserved name would silently redefine
+   * every existing p-5/gap-6/etc. utility in the codebase. */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+
+  /* Two radius families only: pill controls (buttons/chips), card surfaces. */
+  --radius-pill: 9999px;
+  --radius-card: 1rem;
+
+  /* UI Refactoring §12 — desktop cutover moved from Tailwind's default 1024px
+   * to 1200px so `lg:` matches the doc's own Desktop/Tablet boundary. This
+   * also shifts the Agent panel <-> FAB/overlay cutover to 1200px, keeping
+   * the two-column layout through tablet widths per §12's tablet guidance. */
+  --breakpoint-lg: 1200px;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -46,6 +72,30 @@ body {
   background: var(--background);
   color: var(--text);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+}
+
+/* UI Refactoring §7 — typography convention. Not a component, just the
+ * single source of truth for which Tailwind classes mean what, so call
+ * sites stay consistent without a wrapper for every text role.
+ *   H1    text-4xl sm:text-5xl font-semibold tracking-tight text-text   (Hero name only)
+ *   H2    text-2xl font-semibold tracking-tight text-text               (SectionTitle)
+ *   H3    text-xl font-semibold text-text                               (Case Study title)
+ *   H4    text-sm font-semibold uppercase tracking-wide text-text-muted (Case Study subsection label)
+ *   Lead  see #hero .prose-content > p:first-of-type below              (Hero role line)
+ *   Body  .prose-content p (line-height 1.7)                            (paragraph copy)
+ *   Muted text-text-muted, body-sized (text-sm/text-xs)                 (secondary description)
+ *   Meta  text-[11px] text-text-muted                                   (compliance/system/trace text)
+ */
+
+/* Hero-only: the bold role line ("Backend / AI Agent Engineer") is the
+ * second-most-important identity signal after the H1 name, so it gets its
+ * own Lead treatment instead of blending into the muted body paragraphs
+ * that follow it. Scoped to #hero so it never leaks into other sections'
+ * prose-content (that class is shared site-wide). */
+#hero .prose-content > p:first-of-type {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--text);
 }
 
 /* Rendered Markdown output (SDD-01 §5) — no typography plugin, kept minimal. */
@@ -102,6 +152,83 @@ body {
 
 .prose-content code {
   font-family: var(--font-mono), monospace;
+}
+
+/* UI Refactoring Phase 5 — per-section visual variety, ID-scoped only.
+ * `.prose-content` above is shared by Hero, every plain section, and each
+ * Case Study's per-part rendering, so none of these rules may touch the
+ * base `.prose-content` selectors — only descend from a specific section id.
+ * No markdown/content/data structure changes; this is rendering-only. */
+
+/* About / What I Build — CSS multi-column instead of a manual grid: content
+ * is flat h3/p/ul/pre siblings (no wrapper per topic), and `break-after:
+ * avoid-column` on each heading keeps it glued to the block that follows it
+ * without needing to count/pair elements (which would silently break if
+ * the count ever became uneven — see about.md's 4 pairs vs what-i-build.md's
+ * 3 heading groups, the latter isn't a clean pair count). */
+@media (min-width: 768px) {
+  #about .prose-content,
+  #what-i-build .prose-content {
+    column-count: 2;
+    column-gap: var(--space-7);
+  }
+
+  #about .prose-content h3,
+  #what-i-build .prose-content h3 {
+    break-after: avoid-column;
+    break-inside: avoid-column;
+    margin-top: 0;
+  }
+
+  #about .prose-content p,
+  #what-i-build .prose-content ul,
+  #what-i-build .prose-content pre {
+    break-inside: avoid-column;
+  }
+}
+
+/* Skills — the list items are a "tag cloud" by intent (skills.md's own copy
+ * says so), not a bulleted reading list. */
+#skills .prose-content ul {
+  display: flex;
+  flex-wrap: wrap;
+  list-style: none;
+  gap: var(--space-2);
+  padding-left: 0;
+  margin-top: var(--space-3);
+}
+
+#skills .prose-content li {
+  margin-top: 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 2px var(--space-3);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+
+/* Contact — 3 links read better as bordered rows than a bulleted list. */
+#contact .prose-content ul {
+  list-style: none;
+  padding-left: 0;
+  margin-top: var(--space-4);
+}
+
+#contact .prose-content li {
+  margin-top: 0;
+  border-top: 1px solid var(--border);
+  padding-block: var(--space-3);
+}
+
+#contact .prose-content li:last-child {
+  border-bottom: 1px solid var(--border);
+}
+
+/* How I Work — give the 9-step pipeline diagram its own card presence so it
+ * reads as an intentional process diagram, not a leftover code block. */
+#how-i-work .prose-content pre {
+  border: 1px solid var(--border);
+  background: var(--surface);
 }
 
 /* SDD-05 DD-28 — brief highlight after an Agent-triggered scroll (suggestion

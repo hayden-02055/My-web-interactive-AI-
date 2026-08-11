@@ -1,3 +1,4 @@
+import { Chip } from "@/components/ui/Chip";
 import { CASE_STUDY_STATUS_LABEL } from "@/lib/content/labels";
 import type { CaseStudy } from "@/types/content";
 
@@ -18,18 +19,16 @@ export function CaseStudyCard({ caseStudy }: CaseStudyCardProps) {
       <header className="flex flex-col gap-2">
         <div className="flex flex-wrap items-center gap-3">
           <h3 className="text-xl font-semibold text-text">{caseStudy.title}</h3>
-          <span className="rounded-full bg-surface-muted px-2.5 py-0.5 text-xs font-medium text-text-muted">
-            {CASE_STUDY_STATUS_LABEL[caseStudy.status]}
-          </span>
+          <Chip tone="solid">{CASE_STUDY_STATUS_LABEL[caseStudy.status]}</Chip>
         </div>
         <p className="text-sm text-text-muted">
           {caseStudy.category} · {caseStudy.period}
         </p>
         <div className="flex flex-wrap gap-2 pt-1">
           {caseStudy.tech.map((tech) => (
-            <span key={tech} className="rounded-full border border-border px-2.5 py-0.5 text-xs text-text-muted">
+            <Chip key={tech} tone="outline">
               {tech}
-            </span>
+            </Chip>
           ))}
         </div>
       </header>

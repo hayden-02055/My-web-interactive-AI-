@@ -93,7 +93,7 @@ export function AgentOverlay() {
           type="button"
           onClick={closeOverlay}
           aria-label="Close AI Agent"
-          className="rounded-full p-1.5 text-text-muted hover:bg-surface-muted hover:text-text"
+          className="rounded-full p-3 text-text-muted transition-colors hover:bg-surface-muted hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <svg aria-hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="h-5 w-5">
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />

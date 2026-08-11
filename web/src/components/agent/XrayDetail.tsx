@@ -48,7 +48,11 @@ function renderDetail(stage: TraceStep["stage"], detail: NonNullable<TraceStep["
         <ul className="flex flex-col gap-0.5">
           {detail.results.map((result) => (
             <li key={result.anchor}>
-              <button type="button" onClick={() => navigateToAnchor(result.anchor)} className="underline hover:text-text">
+              <button
+                type="button"
+                onClick={() => navigateToAnchor(result.anchor)}
+                className="underline hover:text-text focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
                 {result.label}
               </button>{" "}
               <span>({result.score.toFixed(2)})</span>
