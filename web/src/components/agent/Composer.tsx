@@ -6,8 +6,9 @@ import { useAgent } from "./AgentProvider";
 // DD-24 — no automatic retry; a `RATE_LIMITED` error disables sending for
 // `retry_after` seconds instead of the client silently re-requesting.
 export function Composer() {
-  const { state, sendMessage, stop, retryAvailableAt } = useAgent();
-  const [value, setValue] = useState("");
+  // `composerValue` lives in AgentProvider (not local state) so
+  // StarterPrompts (SDD-05 §1.5) can fill it without sending.
+  const { state, sendMessage, stop, retryAvailableAt, composerValue: value, setComposerValue: setValue } = useAgent();
   const [now, setNow] = useState(() => Date.now());
 
   useEffect(() => {

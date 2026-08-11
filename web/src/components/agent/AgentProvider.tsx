@@ -41,6 +41,10 @@ type AgentContextValue = {
   sendMessage: (text: string) => void;
   stop: () => void;
   retryLast: () => void;
+  // Lifted out of Composer so StarterPrompts (SDD-05 §1.5) can fill the
+  // composer without sending — "fills the input, never auto-sends" (INV-04).
+  composerValue: string;
+  setComposerValue: (value: string) => void;
 };
 
 const AgentContext = createContext<AgentContextValue | null>(null);
@@ -58,6 +62,7 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   // Restoration happens in the effect below, strictly after hydration.
   const [state, setState] = useState<AgentState>(initialAgentState);
   const [retryAvailableAt, setRetryAvailableAt] = useState<number | null>(null);
+  const [composerValue, setComposerValue] = useState("");
   const abortRef = useRef<AbortController | null>(null);
   const lastUserTextRef = useRef<string | null>(null);
   // Guards the save effect below from firing (with the still-empty initial
@@ -168,7 +173,9 @@ export function AgentProvider({ children }: { children: ReactNode }) {
   }, [sendMessage]);
 
   return (
-    <AgentContext.Provider value={{ state, retryAvailableAt, sendMessage, stop, retryLast }}>
+    <AgentContext.Provider
+      value={{ state, retryAvailableAt, sendMessage, stop, retryLast, composerValue, setComposerValue }}
+    >
       {children}
     </AgentContext.Provider>
   );

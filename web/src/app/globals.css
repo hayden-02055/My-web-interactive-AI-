@@ -103,3 +103,27 @@ body {
 .prose-content code {
   font-family: var(--font-mono), monospace;
 }
+
+/* SDD-05 DD-28 — brief highlight after an Agent-triggered scroll (suggestion
+ * card / X-ray search result / MVP outline link). `--accent` is the only
+ * color used, matching §4.3 "no arbitrary color values". */
+.agent-highlight {
+  animation: agent-highlight-ring 1.6s ease-out;
+  border-radius: 1rem;
+}
+
+@keyframes agent-highlight-ring {
+  0% {
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+  100% {
+    box-shadow: 0 0 0 3px transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .agent-highlight {
+    animation: none;
+    box-shadow: 0 0 0 3px var(--accent);
+  }
+}

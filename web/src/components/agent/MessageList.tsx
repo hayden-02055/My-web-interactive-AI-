@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useAgent } from "./AgentProvider";
 import { MessageItem } from "./MessageItem";
+import { StarterPrompts } from "./StarterPrompts";
 
 const STICK_THRESHOLD_PX = 32;
 
@@ -28,6 +29,10 @@ export function MessageList() {
     el.scrollTop = el.scrollHeight;
   }, [state.messages, stickToBottom]);
 
+  // SDD-06 DD-31 — the first assistant message in the transcript stays
+  // expanded even after it completes, so the X-ray is discovered at least once.
+  const firstAssistantId = state.messages.find((m) => m.role === "assistant")?.id ?? null;
+
   return (
     <div
       ref={containerRef}
@@ -40,9 +45,14 @@ export function MessageList() {
         </p>
       ) : null}
       {state.messages.length === 0 ? (
-        <p className="text-xs text-text-muted">Ask me about Haewon&apos;s projects, skills, or how he works.</p>
+        <div className="flex flex-col gap-2">
+          <p className="text-xs text-text-muted">Ask me about Haewon&apos;s projects, skills, or how he works.</p>
+          <StarterPrompts />
+        </div>
       ) : (
-        state.messages.map((message) => <MessageItem key={message.id} message={message} />)
+        state.messages.map((message) => (
+          <MessageItem key={message.id} message={message} isFirstAssistantMessage={message.id === firstAssistantId} />
+        ))
       )}
     </div>
   );

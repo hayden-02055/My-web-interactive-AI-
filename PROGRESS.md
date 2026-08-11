@@ -53,12 +53,36 @@
 - 검증: `pnpm validate:content/lint/build/typecheck/test`(22 tests) 전부 통과, `/`는 여전히 `○ (Static)`. **실제 SDD-03 백엔드(fakeredis+실 OpenAI 키) + Playwright(Chromium)로 라이브 브라우저 검증**: 메시지 전송 → 실시간 스트리밍 답변 확인, Experience로 스크롤 시 nav `aria-current` 및 page context가 동시에 반응(D-39), Case Study 카드로 스크롤 시 `{section:"experience", case_study:"fingoo"}` 정확히 산출, 새로고침 후 대화 복원(DoD 9.3), 모바일 뷰포트(390×844)에서 Agent 슬롯 미표시(SDD-01과 동일), 콘솔 에러 0건.
   - **라이브 검증 중 실제 버그 1건 발견·수정**: `AgentProvider`가 `useState` 초기화 함수에서 `sessionStorage`를 동기로 읽어, 서버 렌더(빈 상태)와 클라이언트 최초 렌더(복원된 상태)가 달라 React hydration 에러가 발생했다. `useEffect`에서 마운트 후 1회 복원하도록 수정 — Next.js 공식 문서가 권장하는 표준 패턴. (`react-hooks/set-state-in-effect` 린트 규칙은 이 케이스에 대해 범위를 좁힌 `eslint-disable-next-line`으로 처리, 사유를 코드에 주석으로 남김.)
 
+- SDD-05·06·07 (Agent Experience Layer — Navigation Suggestion · X-ray · Solution Consulting) 구현
+  - `web/src/lib/agent/navigate.ts` — 앵커 스크롤·강조·포커스 이동 공용 로직(DD-26/27/28), `SuggestionCard`·`XrayDetail`·`MvpOutlineBlock`이 전부 공유
+  - `globals.css`에 `.agent-highlight` 애니메이션 추가 — 기존 `--accent` 토큰만 사용(§4.3), `prefers-reduced-motion` 대응
+  - `web/src/components/agent/SuggestionCard.tsx` (D-41/42/43) — section/contact 분기, 마운트 시 앵커 존재 여부를 미리 확인해 비활성 표시(클릭 실패를 기다리지 않음)
+  - `web/src/components/agent/{XrayPipeline,XrayDetail}.tsx` (D-45~48) — 5개 고정 슬롯(DD-29), stage별 허용 필드만 렌더링하는 화이트리스트(DD-30), 스트리밍 중 펼침·완료 후 접힘·첫 메시지는 한 번 펼친 채 유지(DD-31)
+  - `web/src/components/agent/MvpOutlineBlock.tsx` (D-49/50) — 구조화 렌더링, `relevant_case_studies`는 `SuggestionCard` 재사용(DD-33), `caveats` 비어있을 때 기본 문구
+  - `web/src/components/agent/StarterPrompts.tsx` (D-44) — 정적 상수 4개, 클릭 시 입력창만 채움(전송 안 함)
+  - `AgentProvider`에 `composerValue`/`setComposerValue`를 끌어올려 `StarterPrompts`(형제 컴포넌트)가 `Composer`의 입력을 채울 수 있게 함 — Composer 로컬 state였던 것을 context로 이동
+  - `MessageItem.tsx` 재작성(D-52) — X-ray → 답변 텍스트 → MVP 블록 → 제안 카드 순서(§4.1), 임시 `DebugTraceView` 제거(실제 UI로 대체됨, SDD-04 §6.3가 의도한 대로)
+  - `web/src/lib/agent/fixtures.ts` — F-01~F-06 목 픽스처(D-51, `AgentSseEvent[]` 그대로), `fixtures.test.ts` 6개로 리듀서 결과 검증
+- 검증: `pnpm validate:content/lint/build/typecheck/test`(28 tests) 전부 통과. **6개 픽스처 전부를 실제 브라우저(Playwright)에서 `page.route()`로 `/api/v1/chat` 네트워크 응답을 가로채 렌더링 검증** — 실 백엔드가 구조적으로 만들 수 없는 상태(F-05 스트리밍 중단, F-06 존재하지 않는 앵커)까지 포함해 전부 재현·확인:
+  - F-01: 제안 카드 클릭 → 이동 성공, **클릭 시 네트워크 요청 0회**(DevTools 요청 카운트로 확인, INV-02), 포커스가 실제로 대상 요소로 이동(`document.activeElement.id` 확인), `prefers-reduced-motion: reduce` 에뮬레이션 상태에서도 포커스 이동 동일하게 동작
+  - F-02: 검색 0건이 X-ray Technical Detail에 "no results above the relevance threshold"로 명시 표시
+  - F-03: MVP outline 블록 렌더, Case Study 2건이 클릭 가능한 카드로, 기본 caveat 문구, 별도의 `suggest_contact` 제안이 블록 아래 독립적으로 표시(블록이 CTA를 내장하지 않음, DD-34 확인)
+  - F-04: tool 미사용 인사말 — `selecting_action`이 `skipped`로 표시, 제안·블록 없음
+  - F-05: 스트리밍 중 `error` 이벤트로 종료 — 이미 도착한 부분 텍스트가 사라지지 않고 유지됨을 확인
+  - F-06: 존재하지 않는 앵커 제안 — 카드가 클릭도 하기 전에 마운트 시점부터 이미 비활성 상태로 렌더(사용자가 실패를 겪지 않고 미리 안다)
+  - 2턴 연속 전송으로 X-ray 펼침 정책 확인: 첫 메시지는 완료 후에도 "Process"(펼침) 유지, 두 번째 메시지는 완료 후 "N steps · Nms"(한 줄 요약)로 자동 접힘 — DD-31 그대로 재현
+  - 실 백엔드(fakeredis+실 OpenAI 키)로도 스모크: 시작 프롬프트 클릭(전송 안 됨) → 직접 전송 → 정상 응답. 다만 실 모델이 "Fingoo 관련 링크 알려줘" 류 질문에서 `suggest_section` tool 대신 답변 텍스트에 마크다운 링크(`[text](url)`)를 그대로 적어 넣는 경우를 발견 — 렌더러는 이를 plain text로만 표시(의도된 안전한 동작, `dangerouslySetInnerHTML` 미사용)하지만 모델이 tool 대신 텍스트 링크를 선호하는 경향은 SDD-03 시스템 프롬프트 튜닝 여지로 남음(아래 "다음 단계"에 기록)
+  - 콘솔 에러 0건(모든 시나리오 공통), 모바일 뷰포트 회귀 없음(Agent 슬롯 여전히 미표시)
+  - 확인 못한 것: X-ray `failed` 상태의 실제 렌더(아이콘 로직은 코드리뷰로 검증했으나 `failed` status를 가진 트레이스 스텝을 실제로 주입해보지 않음), X-ray Technical Detail 내부 검색 결과 앵커 클릭(같은 `navigateToAnchor` 공용 함수를 쓰므로 SuggestionCard 클릭 검증으로 갈음 판단)
+
 ## 진행 중인 것
 
 - 없음 (이번 세션 작업 자체는 완료. 단, 아래 "다음 단계"의 항목들은 미해결 상태로 남아있음)
 
 ## 다음 단계
 
+- **[SDD-03 프롬프트 튜닝 여지, 이번 세션에 새로 발견]** 실 모델이 링크를 제안할 때 `suggest_section` tool 대신 답변 텍스트에 마크다운 링크를 직접 적어 넣는 경우가 관찰됐다(위 라이브 검증 참고). 프론트는 안전하게 plain text로 처리하므로 사용자에게 깨진 화면을 보여주지는 않지만, 제안 카드·X-ray가 그 상호작용을 놓치게 된다. SDD-03 시스템 프롬프트에 "링크 제안은 반드시 suggest_section tool을 쓰고 본문에 URL을 직접 쓰지 말 것" 같은 명시적 지시를 추가하면 개선될 가능성이 있음 — 이번 세션 범위(SDD-05/06/07)가 아니라 SDD-03 후속 조정 사항으로 남김.
+- **[SDD-05/06/07 — 일부 DoD 미검증]** X-ray `failed` 상태 트레이스 스텝의 실제 렌더(로직은 있으나 라이브로 주입해보지 않음), Technical Detail 내부 검색 결과 앵커의 개별 클릭(공용 `navigateToAnchor`라 SuggestionCard 검증으로 갈음).
 - **[SDD-04 — 일부 DoD 미검증]** 라이브로 확인한 것 외에 아직 남은 항목:
   - Stop 버튼으로 스트림 중단 시 부분 텍스트 유지(DoD 9.1) — reducer 단위 테스트로는 확인했으나 실제 브라우저에서 Stop 클릭까지는 안 해봄
   - `RATE_LIMITED` 429 JSON 응답의 재시도 카운트다운 UI(DoD 9.4) — 코드는 있으나 실제로 rate limit을 유발해 눈으로 확인하지 않음
@@ -87,3 +111,9 @@
 - `data-agent-section`/`data-agent-case-study` 속성을 기존 `id`(앵커) 속성과 별도로 추가했다 — `id`는 스크롤 앵커/네비게이션 링크 타깃이라는 기존 역할을 그대로 유지하고, page-context 감지는 별도 속성으로 분리해 두 관심사가 서로의 값 형식(섹션은 id 그대로, Case Study는 앵커가 아니라 순수 id)에 얽매이지 않게 했다.
 - `IntersectionObserver`의 `rootMargin`(`-10% 0px -70% 0px`)·`threshold` 값은 스펙에 구체적 수치가 없어 흔한 scroll-spy 패턴값으로 직접 정했다 — 실제 사용감을 보고 조정 여지가 있는 값.
 - Case Study 중첩 판정(DD-21 "Case Study 활성 시 `{section: 'experience', case_study: id}`")은 "Case Study 요소가 하나라도 교차 중이면 무조건 우선, 없을 때만 섹션 레벨로 폴백"으로 구현했다 — Case Study `<article>`과 상위 `<section id="experience">`는 크기 차이가 커서 교차 비율을 직접 비교하는 게 무의미하다고 판단한 결과.
+- SDD-05 `SuggestionCard`의 앵커 존재 확인(DD-27)은 클릭 실패를 기다리지 않고 **마운트 시점에 미리** 확인한다 — 정적 포트폴리오 콘텐츠는 조건부 렌더링이 없어 마운트 시점에 이미 최종 DOM 상태이므로, 클릭 전에 비활성 표시를 보여줄 수 있고 그게 더 정직하다고 판단했다.
+- X-ray 슬롯(DD-29)이 같은 stage에 대해 여러 `trace.step`을 받을 수 있는 경우(tool 라운드 2회 이상 시 `selecting_action`이 반복 발행됨)를 대비해, 한 슬롯 안에 여러 행을 쌓아 보여주도록 구현했다 — SDD-03 §5.2의 `id` 규칙("같은 stage가 반복되면 `tool_call:2` 등으로 구분")과 일치하며, `agentReducer`가 이미 `id` 기준으로 각 트레이스를 구분해 배열에 유지하므로 자연스럽게 맞아떨어졌다.
+- X-ray 상태 아이콘은 색상이 아니라 글리프(✓/✕/●/○)로 구분했다 — 이 프로젝트의 `@theme` 토큰(§4.3)에 "실패/위험"을 나타낼 색이 없어서, 색만으로 상태를 구분하면 접근성도 떨어지고 없는 색을 새로 만드는 셈이 되기 때문.
+- X-ray "첫 메시지" 판정(DD-31 "첫 방문 시 한 번은 자동으로 펼쳐진 채로 둔다")은 **현재 세션의 대화 배열에서 가장 오래된 assistant 메시지인지**로 판정한다 — 별도 저장소 없이 계산 가능하고, `sessionStorage` 복원(DD-23)과도 자연히 일치한다(복원된 대화의 첫 메시지도 동일하게 "첫 메시지"로 취급됨).
+- `MvpOutlineBlock`이 `relevant_case_studies`의 id만 갖고 있어 실제 Case Study 제목을 모르는 문제는, 없는 데이터를 지어내는 대신 id를 `humanizeId()`로 포맷팅(`"perix-sentinel"` → `"Perix Sentinel"`)해서 표시하는 것으로 해결했다 — 서버 콘텐츠 메타데이터를 클라이언트로 새로 흘려보내는 배선을 추가하지 않기 위한 선택.
+- `Composer`의 입력값(`composerValue`)을 로컬 state에서 `AgentProvider` context로 끌어올렸다 — `StarterPrompts`가 형제 컴포넌트인 `Composer`의 입력창을 채워야 하는데(§1.5), React에서 형제 간 상태 공유는 공통 부모로 끌어올리는 것이 정공법이라고 판단했다.
