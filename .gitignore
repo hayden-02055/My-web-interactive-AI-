@@ -22,3 +22,7 @@ api/*.egg-info/
 
 # OS
 .DS_Store
+
+# local tooling / build artifacts
+.claude/settings.local.json
+*.tar.gz
